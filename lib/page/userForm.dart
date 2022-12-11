@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:invoice_generator/util/userDB.dart';
 import '../model/user.dart';
 

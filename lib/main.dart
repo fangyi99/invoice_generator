@@ -5,11 +5,18 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:invoice_generator/model/TnC.dart';
+import 'package:invoice_generator/model/item.dart';
+import 'package:invoice_generator/model/itemSection.dart';
+import 'package:invoice_generator/model/transport.dart';
 import 'package:invoice_generator/model/user.dart';
 import 'package:invoice_generator/page/database.dart';
+import 'package:invoice_generator/page/quotationForm.dart';
+
+import 'model/quotation.dart';
 
 void main() async{
-
+  WidgetsFlutterBinding.ensureInitialized();
   //initialize hive
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
@@ -53,10 +60,14 @@ class Index extends StatelessWidget{
                               minimumSize: const Size.fromHeight(50), // NEW
                             ),
                             onPressed: () => {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(builder: (context) => QuotationForm(formType: 'quotation', data: null)),
-                              // )
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => QuotationForm(
+                                  formMode: "create",
+                                  quotation: Quotation("", "", "C.O.D", "", "Labour & Materials", DateTime.now(),User(),[ItemSection(type:"Default", itemList: [Item()])], Transport(type: "Two Way"),TnC())
+                                ),
+                                )
+                              )
                             },
                             child: const Text(
                               'Q U O T A T I O N',
