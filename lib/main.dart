@@ -11,8 +11,14 @@ import 'package:invoice_generator/model/itemSection.dart';
 import 'package:invoice_generator/model/transport.dart';
 import 'package:invoice_generator/model/user.dart';
 import 'package:invoice_generator/page/database.dart';
+import 'package:invoice_generator/page/invoiceForm.dart';
 import 'package:invoice_generator/page/quotationForm.dart';
 
+import 'model/addOn.dart';
+import 'model/deduction.dart';
+import 'model/deposit.dart';
+import 'model/invoice.dart';
+import 'model/omission.dart';
 import 'model/quotation.dart';
 
 void main() async{
@@ -81,16 +87,19 @@ class Index extends StatelessWidget{
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size.fromHeight(50), // NEW
                             ),
-                            onPressed: () => {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(builder: (context) => DBQuotation(export: true)),
-                              // )
-                            },
                             child: const Text(
                               'I N V O I C E',
                               style: TextStyle(fontWeight: FontWeight.bold),
-                            )
+                            ),
+                            onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => InvoiceForm(
+                                    formMode: "create",
+                                    invoice: Invoice("", "", "C.O.D", "", "Labour & Materials", DateTime.now(),User(),[ItemSection(type:"Default", itemList: [Item()])], Transport(), [AddOn()], [Deduction(omissions: [Omission()])], [Deposit()])
+                                ))
+                              )
+                            }
                         ),
                         const SizedBox(
                           height: 10,

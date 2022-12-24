@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:invoice_generator/model/quotation.dart';
-import 'package:invoice_generator/widget/staticForm/billingSF.dart';
-import 'package:invoice_generator/widget/staticForm/documentSF.dart';
-import 'package:invoice_generator/widget/staticForm/itemSF.dart';
-import 'package:invoice_generator/widget/staticForm/transport.dart';
-import '../widget/staticForm/tncSF.dart';
+import 'package:invoice_generator/widget/form/billingSF.dart';
+import 'package:invoice_generator/widget/form/documentSF.dart';
+import 'package:invoice_generator/widget/form/itemSF.dart';
+import 'package:invoice_generator/widget/form/transport.dart';
+import '../widget/form/tncSF.dart';
 
 class QuotationForm extends StatefulWidget {
 
@@ -64,7 +64,6 @@ class QuotationFormState extends State<QuotationForm> {
       Step(
         title: SizedBox.shrink(),
         content: DocumentSF(
-            type: "quotation",
             mode: widget.formMode,
             quotation: widget.quotation
         ),

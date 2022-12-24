@@ -3,14 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
+import '../../model/invoice.dart';
 import '../../model/quotation.dart';
 
-class DocumentSF extends StatelessWidget {
+class DocumentSF extends StatefulWidget {
 
-  String type, mode;
+  String mode;
   Quotation? quotation;
+  Invoice? invoice;
 
-  DocumentSF({required this.type, required this.mode, this.quotation});
+  DocumentSF({required this.mode, this.quotation, this.invoice});
+
+  @override
+  State<DocumentSF> createState() => _DocumentSFState();
+}
+
+class _DocumentSFState extends State<DocumentSF> {
+  late bool isQuotation;
+
+  @override
+  void initState(){
+    if(widget.quotation != null){
+      isQuotation = true;
+    }
+    else{
+      isQuotation = false;
+    }
+  }
 
   var quoNumberMask = new MaskTextInputFormatter(
     mask: 'RD/####Q/##',
@@ -24,14 +43,17 @@ class DocumentSF extends StatelessWidget {
     type: MaskAutoCompletionType.eager,
   );
 
+  TextEditingController dateController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: [
         SizedBox(height: 5),
         TextFormField(
           maxLines: null,
-          enabled: mode!="update",
+          enabled: widget.mode!="update",
           decoration: InputDecoration(
             labelText: 'PDF File Name *',
             border: OutlineInputBorder(),
@@ -39,8 +61,8 @@ class DocumentSF extends StatelessWidget {
           ),
           textInputAction: TextInputAction.done,
           onChanged: (value){
-            if(quotation != null){
-              quotation!.fileName = value;
+            if(widget.quotation != null){
+              widget.quotation!.fileName = value;
             }
           },
           validator: (value) {
@@ -55,17 +77,17 @@ class DocumentSF extends StatelessWidget {
         ),
         SizedBox(height: 15),
         TextFormField(
-          inputFormatters: (type != 'quotation') ? [invNumberMask] : [quoNumberMask],
+          inputFormatters: isQuotation ? [quoNumberMask] : [invNumberMask],
           decoration: InputDecoration(
-            labelText: (type != 'quotation') ? 'Invoice No. *' : 'Quotation No. *',
-            hintText: (type != 'quotation') ? 'RD/####/YY' : 'RD/####Q/YY',
+            labelText: isQuotation ?  'Quotation No. *' : 'Invoice No. *',
+            hintText: isQuotation ? 'RD/####Q/YY' : 'RD/####/YY',
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.done,
           onChanged: (value){
-            if(quotation != null) {
-              quotation!.documentID = value;
+            if(widget.quotation != null) {
+              widget.quotation!.documentID = value;
             }
           },
           validator: (value) {
@@ -82,9 +104,9 @@ class DocumentSF extends StatelessWidget {
           ),
           textInputAction: TextInputAction.done,
           onChanged: (value){
-            if(quotation != null) {
-              quotation!.term = value;
-            }
+            setState(() {
+              isQuotation ? (widget.quotation!.term = value) : (widget.invoice!.term = value);
+            });
           },
           validator: (value) {
             if(value == null || value.isEmpty)
@@ -94,6 +116,7 @@ class DocumentSF extends StatelessWidget {
         ),
         SizedBox(height: 15),
         TextFormField(
+          controller: dateController,
           readOnly: true,
           decoration: InputDecoration(
             suffixIcon: Icon(Icons.calendar_month),
@@ -102,18 +125,29 @@ class DocumentSF extends StatelessWidget {
           ),
           onTap: () async {
             DateTime? newDate;
-            if(quotation!.date!=null && quotation!.date!=''){
-              newDate = await showDatePicker(context: context, initialDate: DateTime.parse(quotation!.date.toString()), firstDate: DateTime(2000), lastDate: DateTime(2200));
+            if((isQuotation) ? (widget.quotation!.date!=null && widget.quotation!.date!='') : (widget.invoice!.date!=null && widget.invoice!.date!='')){
+              newDate = await showDatePicker(
+                  context: context,
+                  initialDate: isQuotation ? DateTime.parse(widget.quotation!.date.toString()) : DateTime.parse(widget.invoice!.date.toString()),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2200)
+              );
             }else{
               newDate = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2200));
             }
             //if 'CANCEL'
             if(newDate == null) return;
             //if 'OK'
-            // dateDisplay.text = DateFormat('d-MMM-yyyy').format(newDate);
-            if(quotation != null) {
-              quotation!.date = newDate!;
-            }
+            setState(() {
+              if(isQuotation == true){
+                widget.quotation!.date = newDate!;
+              }
+              else{
+                widget.invoice!.date = newDate!;
+              }
+            });
+            //update display
+            dateController.text = DateFormat('d-MMM-yyyy').format(newDate);
           },
           textInputAction: TextInputAction.done,
         ),
@@ -127,9 +161,9 @@ class DocumentSF extends StatelessWidget {
           ),
           textInputAction: TextInputAction.done,
           onChanged: (value){
-            if(quotation != null) {
-              quotation!.subjectTitle = value;
-            }
+            setState(() {
+              isQuotation ? (widget.quotation!.subjectTitle = value) : (widget.invoice!.subjectTitle = value);
+            });
           },
           validator: (value) {
             if(value == null || value.isEmpty)

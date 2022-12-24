@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../model/invoice.dart';
 import '../../model/quotation.dart';
 import '../radioGroup.dart';
 
 class TransportSF extends StatefulWidget {
 
   Quotation? quotation;
-
-  TransportSF({this.quotation});
+  Invoice? invoice;
+  TransportSF({this.quotation, this.invoice});
 
   @override
   State<TransportSF> createState() => _TransportSFState();
@@ -16,6 +17,17 @@ class TransportSF extends StatefulWidget {
 
 class _TransportSFState extends State<TransportSF> {
   List<String> transportList = ['One Way', 'Two Way', 'Self Collect', 'Others'];
+  late bool isQuotation;
+
+  @override
+  void initState(){
+    if(widget.quotation != null){
+      isQuotation = true;
+    }
+    else{
+      isQuotation = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +45,7 @@ class _TransportSFState extends State<TransportSF> {
                     selectedIndex: selectedIndex,
                     onChange: (){
                       setState((){
-                        widget.quotation!.transport.type = transportList[0];
+                        isQuotation ? widget.quotation!.transport.type = transportList[0] : widget.invoice!.transport.type = transportList[0];
                       });
                     }
                 )
@@ -45,7 +57,7 @@ class _TransportSFState extends State<TransportSF> {
                     selectedIndex: selectedIndex,
                     onChange: (){
                       setState((){
-                        widget.quotation!.transport.type = transportList[1];
+                        isQuotation ? widget.quotation!.transport.type = transportList[1] : widget.invoice!.transport.type = transportList[1];
                       });
                     }
                 )
@@ -57,8 +69,8 @@ class _TransportSFState extends State<TransportSF> {
                     selectedIndex: selectedIndex,
                     onChange: (){
                       setState((){
-                        widget.quotation!.transport.type = "Self Collection";
-                        widget.quotation!.transport.amount = 0;
+                        isQuotation ? (widget.quotation!.transport.type = "Self Collection") : (widget.invoice!.transport.type = "Self Collection");
+                        isQuotation ? (widget.quotation!.transport.amount = 0) : (widget.invoice!.transport.amount = 0);
                       });
                     }
                 )
@@ -70,7 +82,7 @@ class _TransportSFState extends State<TransportSF> {
                     selectedIndex: selectedIndex,
                     onChange: (){
                       setState((){
-                        widget.quotation!.transport.type = transportList[3];
+                        isQuotation ? (widget.quotation!.transport.type = transportList[3]) : (widget.invoice!.transport.type = transportList[3]);
                       });
                     }
                 )
@@ -89,7 +101,7 @@ class _TransportSFState extends State<TransportSF> {
               textInputAction: TextInputAction.done,
               onChanged: (value){
                 setState((){
-                  widget.quotation!.transport.otherType = value;
+                  isQuotation ? (widget.quotation!.transport.otherType = value) : (widget.invoice!.transport.otherType = value);
                 });
               },
             ),
@@ -120,7 +132,7 @@ class _TransportSFState extends State<TransportSF> {
   }
 
   getSelectedIndex(){
-    switch(widget.quotation!.transport.type){
+    switch(isQuotation ? widget.quotation!.transport.type : widget.invoice!.transport.type){
       case "One Way":
         return 0;
       case "Two Way":
