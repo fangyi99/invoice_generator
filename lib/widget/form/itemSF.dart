@@ -82,14 +82,20 @@ class _ItemSFState extends State<ItemSF> {
           child: Align(
               alignment: Alignment.centerLeft,
               child: Container(
-                height: 43,
-                child: ElevatedButton(
-                  onPressed: (){
-                    setState((){
-                      isQuotation ? quotation!.itemSections.add(ItemSection(type: "Default", itemList: [Item()])) : invoice!.itemSections.add(ItemSection(type: "Default", itemList: [Item()]));
-                    });
-                  },
-                  child: const Text('+ Add Option'),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 15.0),
+                    child: ElevatedButton(
+                      onPressed: (){
+                        setState((){
+                          isQuotation ? quotation!.itemSections.add(ItemSection(type: "Default", itemList: [Item()])) : invoice!.itemSections.add(ItemSection(type: "Default", itemList: [Item()]));
+                        });
+                      },
+                      child: const Text('+ Add Option'),
+                    ),
+                  ),
                 ),
               )
           ),
@@ -146,7 +152,6 @@ class _ItemSFState extends State<ItemSF> {
             Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
-                  height: 43,
                   child: ElevatedButton(
                       onPressed: (){
                         setState(() {

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:invoice_generator/model/quotation.dart';
+import 'package:invoice_generator/util/quotationDB.dart';
 import 'package:invoice_generator/widget/form/billingSF.dart';
 import 'package:invoice_generator/widget/form/documentSF.dart';
 import 'package:invoice_generator/widget/form/itemSF.dart';
@@ -27,7 +28,7 @@ class QuotationFormState extends State<QuotationForm> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-        title: Text("Quotation Form"),
+        title: const Text("Quotation Form"),
         ),
         body: Stepper(
           type: StepperType.horizontal,
@@ -35,24 +36,56 @@ class QuotationFormState extends State<QuotationForm> {
           currentStep: currentStep,
           onStepTapped: (step){
             setState((){
-              this.currentStep = step;
+              currentStep = step;
             });
           },
           onStepContinue: (){
-            setState(() {
-              if(this.currentStep < formSteps().length){
-                this.currentStep = this.currentStep + 1;
+            if(currentStep == formSteps().length - 1){
+              // QuotationDB.createQuotation(context, widget.quotation!.toJSON());
+              QuotationDB.updateQuotation(widget.quotation!);
+            }else{
+              if(currentStep < formSteps().length){
+                setState(() {
+                  currentStep = currentStep + 1;
+                });
               }
-            });
+            }
           },
           onStepCancel: (){
             setState(() {
-              if(this.currentStep > 0){
-                this.currentStep = this.currentStep - 1;
+              if(currentStep > 0){
+                currentStep = currentStep - 1;
               }else{
-                this.currentStep = 0;
+                currentStep = 0;
               }
             });
+          },
+          controlsBuilder: (context, controls) {
+            final isLastStep = currentStep == formSteps().length - 1;
+            return Container(
+              margin: const EdgeInsetsDirectional.symmetric(horizontal: 0, vertical: 15),
+              child: Row(
+                children: [if (currentStep > 0)
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: controls.onStepCancel,
+                      child: const Text('Back'),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: controls.onStepContinue,
+                      child: (isLastStep)
+                          ? const Text('Submit')
+                          : const Text('Next'),
+                    ),
+                  ),
+                ],
+              ),
+            );
           },
         ),
     );
@@ -62,7 +95,7 @@ class QuotationFormState extends State<QuotationForm> {
   List<Step> formSteps() {
     List<Step> steps = [
       Step(
-        title: SizedBox.shrink(),
+        title: const SizedBox.shrink(),
         content: DocumentSF(
             mode: widget.formMode,
             quotation: widget.quotation
@@ -70,26 +103,23 @@ class QuotationFormState extends State<QuotationForm> {
         isActive: currentStep >= 0,
       ),
       Step(
-        title: SizedBox.shrink(),
-        content: BillingSF(),
+        title: const SizedBox.shrink(),
+        content: BillingSF(quotation: widget.quotation),
         isActive: currentStep >= 1,
       ),
       Step(
-        title: SizedBox.shrink(),
+        title: const SizedBox.shrink(),
         content: ItemSF(quotation: widget.quotation),
-        // content: ItemListSF(supplyTypeIndex: supplyTypeIndex, onSupplyTypeChange: radioChangeCb, itemSections: itemSections, onAddItemSection: onAddItemSection, onSaveItemSection: onSaveItemSection, onDeleteItemSection: onDeleteItemSection, itemSectionValues: itemSectionDropdownValues, onItemSectionChange: onItemSectionDropdownChange),
         isActive: currentStep >= 2,
       ),
       Step(
-        title: SizedBox.shrink(),
+        title: const SizedBox.shrink(),
         content: TransportSF(quotation: widget.quotation),
-        // content: TransportationForm(radioIndex: transportIndex, onRadioChange: radioChangeCb, controllers: transportControllers),
         isActive: currentStep >= 3,
       ),
       Step(
-        title: SizedBox.shrink(),
+        title: const SizedBox.shrink(),
         content: TnCSF(quotation: widget.quotation),
-        // content: TnCForm(balancePmtIndex: balancePmtIndex, progressIndex: progressIndex, validityPrdIndex: validityPrdIndex, onRadioChange: radioChangeCb),
         isActive: currentStep >= 4,
       )
     ];

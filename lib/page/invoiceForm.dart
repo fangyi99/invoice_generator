@@ -29,7 +29,7 @@ class InvoiceFormState extends State<InvoiceForm> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("Invoice Form"),
+        title: const Text("Invoice Form"),
       ),
       body: Stepper(
         type: StepperType.horizontal,
@@ -37,24 +37,55 @@ class InvoiceFormState extends State<InvoiceForm> {
         currentStep: currentStep,
         onStepTapped: (step){
           setState((){
-            this.currentStep = step;
+            currentStep = step;
           });
         },
         onStepContinue: (){
-          setState(() {
-            if(this.currentStep < formSteps().length){
-              this.currentStep = this.currentStep + 1;
+          if(currentStep == formSteps().length - 1){
+            print(widget.invoice.toJSON());
+          }else{
+            if(currentStep < formSteps().length){
+              setState(() {
+                currentStep = currentStep + 1;
+              });
             }
-          });
+          }
         },
         onStepCancel: (){
           setState(() {
-            if(this.currentStep > 0){
-              this.currentStep = this.currentStep - 1;
+            if(currentStep > 0){
+              currentStep = currentStep - 1;
             }else{
-              this.currentStep = 0;
+              currentStep = 0;
             }
           });
+        },
+        controlsBuilder: (context, controls) {
+          final isLastStep = currentStep == formSteps().length - 1;
+          return Container(
+            margin: const EdgeInsetsDirectional.symmetric(horizontal: 0, vertical: 15),
+            child: Row(
+              children: [if (currentStep > 0)
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: controls.onStepCancel,
+                    child: const Text('Back'),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: controls.onStepContinue,
+                    child: (isLastStep)
+                        ? const Text('Submit')
+                        : const Text('Next'),
+                  ),
+                ),
+              ],
+            ),
+          );
         },
       ),
     );
@@ -64,7 +95,7 @@ class InvoiceFormState extends State<InvoiceForm> {
   List<Step> formSteps() {
     List<Step> steps = [
       Step(
-        title: SizedBox.shrink(),
+        title: const SizedBox.shrink(),
         content: DocumentSF(
             mode: widget.formMode,
             invoice: widget.invoice
@@ -72,36 +103,33 @@ class InvoiceFormState extends State<InvoiceForm> {
         isActive: currentStep >= 0,
       ),
       Step(
-        title: SizedBox.shrink(),
-        content: BillingSF(),
+        title: const SizedBox.shrink(),
+        content: BillingSF(invoice: widget.invoice),
         isActive: currentStep >= 1,
       ),
       Step(
-        title: SizedBox.shrink(),
+        title: const SizedBox.shrink(),
         content: ItemSF(invoice: widget.invoice),
         isActive: currentStep >= 2,
       ),
       Step(
-        title: SizedBox.shrink(),
+        title: const SizedBox.shrink(),
         content: TransportSF(invoice: widget.invoice),
         isActive: currentStep >= 3,
       ),
       Step(
-        title: SizedBox.shrink(),
+        title: const SizedBox.shrink(),
         content: AddOnSF(invoice: widget.invoice),
-        // content: TnCForm(balancePmtIndex: balancePmtIndex, progressIndex: progressIndex, validityPrdIndex: validityPrdIndex, onRadioChange: radioChangeCb),
         isActive: currentStep >= 4,
       ),
       Step(
-        title: SizedBox.shrink(),
+        title: const SizedBox.shrink(),
         content: DeductionSF(invoice: widget.invoice),
-        // content: TnCForm(balancePmtIndex: balancePmtIndex, progressIndex: progressIndex, validityPrdIndex: validityPrdIndex, onRadioChange: radioChangeCb),
         isActive: currentStep >= 5,
       ),
       Step(
-        title: SizedBox.shrink(),
+        title: const SizedBox.shrink(),
         content: DepositSF(invoice: widget.invoice),
-        // content: TnCForm(balancePmtIndex: balancePmtIndex, progressIndex: progressIndex, validityPrdIndex: validityPrdIndex, onRadioChange: radioChangeCb),
         isActive: currentStep >= 6,
       )
     ];

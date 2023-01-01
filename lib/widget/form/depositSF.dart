@@ -39,7 +39,6 @@ class _DepositFormState extends State<DepositSF> {
         Align(
             alignment: Alignment.centerLeft,
             child: Container(
-              height: 43,
               child: ElevatedButton(
                   onPressed: (){
                     setState((){

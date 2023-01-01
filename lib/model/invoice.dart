@@ -16,5 +16,15 @@ class Invoice{
   List<Deposit> deposits;
 
 
-  Invoice(this.fileName, this.documentID, this.term, this.subjectTitle, this.itemSupply, this.date, this.user, this.itemSections, this.transport, this.addOns, this.deductions, this.deposits);
+  Invoice(this.fileName, this.documentID, this.term, this.subjectTitle, this.itemSupply,
+      this.date, this.user, this.itemSections, this.transport, this.addOns, this.deductions, this.deposits);
+
+  Map<String, dynamic> toJSON() {
+    return {
+      "fileName": fileName,
+      "documentID": documentID, "term": term, "subjectTitle": subjectTitle,
+      "itemSupply": itemSupply, "date": date, "user": user.toJSON(), "itemSections": itemSections.map((e) => e.toJSON()), "transport": transport.toJSON(),
+      "addOns": addOns.map((e) => e.toJSON()), "deductions": deductions.map((e) => e.toJSON()), "deposits": deposits.map((e) => e.toJSON())
+    };
+  }
 }

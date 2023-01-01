@@ -43,12 +43,12 @@ class UserFormState extends State<UserForm> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: (widget.user!=null) ? ((widget.formMode == "edit") ? Text('Edit User') : Text('User Details')) : Text('Add a User'),
+        title: (widget.user!=null) ? ((widget.formMode == "edit") ? const Text('Edit User') : const Text('User Details')) : const Text('Add a User'),
         actions: [
           Visibility(
             visible: widget.user!=null && widget.formMode == "read",
             child: IconButton(
-                icon: Icon(Icons.edit),
+                icon: const Icon(Icons.edit),
                 onPressed: () {
                   setState(() {
                     widget.formMode = "edit";
@@ -59,7 +59,7 @@ class UserFormState extends State<UserForm> {
           Visibility(
             visible: widget.user!=null && widget.formMode == "edit",
             child: IconButton(
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
                 onPressed: () {
                   UserDB.deleteUser(context, widget.user!);
                 }
@@ -74,22 +74,22 @@ class UserFormState extends State<UserForm> {
           child: ListView(
               shrinkWrap: true,
               children: [
-                SizedBox(height: 5.0),
+                const SizedBox(height: 5.0),
                 TextFormField(
                   enabled: widget.formMode=="edit",
                   controller: companyController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Company Name',
                     hintText: 'ABC Company',
                     border: OutlineInputBorder(),
                   ),
                   textInputAction: TextInputAction.done,
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 TextFormField(
                   enabled: widget.formMode=="edit",
                   controller: nameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Addressee / Attn *',
                     hintText: 'Ms Emma',
                     border: OutlineInputBorder(),
@@ -97,16 +97,17 @@ class UserFormState extends State<UserForm> {
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.done,
                   validator: (value) {
-                    if(value == null || value.isEmpty)
+                    if(value == null || value.isEmpty) {
                       return 'This field is required.';
+                    }
                     return null;
                   },
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 TextFormField(
                   enabled: widget.formMode=="edit",
                   controller: addressL1Controller,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Address Line 1 *',
                     hintText: '39 Scotts Road',
                     border: OutlineInputBorder(),
@@ -114,12 +115,13 @@ class UserFormState extends State<UserForm> {
                   keyboardType: TextInputType.streetAddress,
                   textInputAction: TextInputAction.done,
                   validator: (value) {
-                    if(value == null || value.isEmpty)
+                    if(value == null || value.isEmpty) {
                       return 'This field is required.';
+                    }
                     return null;
                   },
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 TextFormField(
                   enabled: widget.formMode=="edit",
                   controller: addressL2Controller,
@@ -130,8 +132,9 @@ class UserFormState extends State<UserForm> {
                   ),
                   textInputAction: TextInputAction.done,
                   validator: (value) {
-                    if(value == null || value.isEmpty)
+                    if(value == null || value.isEmpty) {
                       return 'This field is required.';
+                    }
                     return null;
                   },
                 ),
@@ -173,7 +176,7 @@ class UserFormState extends State<UserForm> {
                         child: TextFormField(
                           enabled: widget.formMode=="edit",
                           controller: countryCodeController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             prefixIcon: Padding(
                               padding: EdgeInsets.all(10),
                               child: Text('\+'),
@@ -186,8 +189,9 @@ class UserFormState extends State<UserForm> {
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.done,
                           validator: (value) {
-                            if(value == null || value.isEmpty)
+                            if(value == null || value.isEmpty) {
                               return 'This field is required.';
+                            }
                             return null;
                           },
                         ),
@@ -198,7 +202,7 @@ class UserFormState extends State<UserForm> {
                       child: TextFormField(
                         enabled: widget.formMode=="edit",
                         controller: hdphController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Hdph *',
                           hintText: '1234 1234',
                           border: OutlineInputBorder(),
@@ -206,15 +210,16 @@ class UserFormState extends State<UserForm> {
                         keyboardType: TextInputType.phone,
                         textInputAction: TextInputAction.done,
                         validator: (value) {
-                          if(value == null || value.isEmpty)
+                          if(value == null || value.isEmpty) {
                             return 'This field is required.';
+                          }
                           return null;
                         },
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Row(
                   children: [
                     Expanded(
@@ -224,7 +229,7 @@ class UserFormState extends State<UserForm> {
                         child: TextFormField(
                           enabled: widget.formMode=="edit",
                           controller: countryCode2Controller,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             prefixIcon: Padding(
                               padding: EdgeInsets.all(10),
                               child: Text('\+'),
@@ -244,7 +249,7 @@ class UserFormState extends State<UserForm> {
                       child: TextFormField(
                         enabled: widget.formMode=="edit",
                         controller: officeController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Office',
                           hintText: '1234 1234',
                           border: OutlineInputBorder(),
@@ -255,11 +260,11 @@ class UserFormState extends State<UserForm> {
                     ),
                   ],
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 TextFormField(
                   enabled: widget.formMode=="edit",
                   controller: emailController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Email',
                     hintText: 'emma@gmail.com',
                     border: OutlineInputBorder(),
@@ -269,32 +274,33 @@ class UserFormState extends State<UserForm> {
                   validator: (value) {
                     String pattern = r'\w+@\w+\.\w+';
                     if(value!=null && value.isNotEmpty){
-                      if(!RegExp(pattern).hasMatch(value))
+                      if(!RegExp(pattern).hasMatch(value)) {
                         return 'Invalid email format';
+                      }
                     }
                   },
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Visibility(
                   visible: widget.formMode=="edit",
                   child: ElevatedButton(
                     onPressed: (){
                       if(_formKey.currentState!.validate()){
-                        final user = {
-                          "company": companyController.text,
-                          "name": nameController.text,
-                          "address1": addressL1Controller.text,
-                          "address2": addressL2Controller.text,
-                          "address3": addressL3Controller.text,
-                          "postalCode": postalCodeController.text,
-                          "hdphCC": countryCodeController.text,
-                          "hdph": hdphController.text,
-                          "officeCC": countryCode2Controller.text,
-                          "office": officeController.text,
-                          "email": emailController.text
-                        };
-                        
-                        (widget.user != null) ? UserDB.updateUser(_scaffoldKey.currentContext!, widget.user!, user) : UserDB.createUser(_scaffoldKey.currentContext!, user);
+                        final user = User(
+                            company: companyController.text,
+                            name: nameController.text,
+                            address1: addressL1Controller.text,
+                            address2: addressL2Controller.text,
+                            address3: addressL3Controller.text,
+                            postalCode: postalCodeController.text,
+                            hdphCC: countryCodeController.text,
+                            hdph: hdphController.text,
+                            officeCC: countryCode2Controller.text,
+                            office: officeController.text,
+                            email: emailController.text
+                        );
+
+                        (widget.user != null) ? UserDB.updateUser(user) : UserDB.createUser(user);
                       }
                     },
                     child: const Text('Save'),

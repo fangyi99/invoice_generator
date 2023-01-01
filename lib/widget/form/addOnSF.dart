@@ -37,7 +37,6 @@ class AddOnSFState extends State<AddOnSF> {
         Align(
             alignment: Alignment.centerLeft,
             child: Container(
-              height: 43,
               child: ElevatedButton(
                   onPressed: (){
                     setState(() {

@@ -136,7 +136,6 @@ class DeductionSFState extends State<DeductionSF> {
               Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    height: 43,
                     child: ElevatedButton(
                         onPressed: (){
                           setState(() {
@@ -188,7 +187,7 @@ class DeductionSFState extends State<DeductionSF> {
             textInputAction: TextInputAction.done,
             onChanged: (value){
               setState(() {
-                invoice.deductions[sectionIndex].omissions?[itemIndex]?.description = value;
+                invoice.deductions[sectionIndex].omissions?[itemIndex].description = value;
               });
             }
         ),
@@ -207,7 +206,7 @@ class DeductionSFState extends State<DeductionSF> {
             onChanged: (value) => {
               if(value != ''){
                 setState((){
-                  invoice.deductions[sectionIndex].omissions?[itemIndex]?.amount = double.parse(double.parse(value).toStringAsFixed(2));
+                  invoice.deductions[sectionIndex].omissions?[itemIndex].amount = double.parse(double.parse(value).toStringAsFixed(2));
                 })
               },
             }

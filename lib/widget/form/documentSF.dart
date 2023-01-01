@@ -5,6 +5,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../../model/invoice.dart';
 import '../../model/quotation.dart';
+import '../../page/database.dart';
 
 class DocumentSF extends StatefulWidget {
 
@@ -19,10 +20,15 @@ class DocumentSF extends StatefulWidget {
 }
 
 class _DocumentSFState extends State<DocumentSF> {
+  Quotation? quotation;
+  Invoice? invoice;
   late bool isQuotation;
 
   @override
   void initState(){
+    quotation = widget.quotation;
+    invoice = widget.invoice;
+
     if(widget.quotation != null){
       isQuotation = true;
     }
@@ -50,7 +56,28 @@ class _DocumentSFState extends State<DocumentSF> {
 
     return Column(
       children: [
-        SizedBox(height: 5),
+        // SizedBox(height: 5),
+        Visibility(
+          visible: !isQuotation,
+          child: SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 15.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  final importedQuotation = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Database(exportType: "quotation")),
+                  );
+                  updateQuotation(importedQuotation);
+                },
+                child: Text('Import Quotation'),
+              ),
+            ),
+          ),
+        ),
+        // SizedBox(height: 5),
         TextFormField(
           maxLines: null,
           enabled: widget.mode!="update",
@@ -61,8 +88,11 @@ class _DocumentSFState extends State<DocumentSF> {
           ),
           textInputAction: TextInputAction.done,
           onChanged: (value){
-            if(widget.quotation != null){
-              widget.quotation!.fileName = value;
+            if(isQuotation){
+              quotation!.fileName = value;
+            }
+            else{
+              invoice!.fileName = value;
             }
           },
           validator: (value) {
@@ -86,8 +116,11 @@ class _DocumentSFState extends State<DocumentSF> {
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.done,
           onChanged: (value){
-            if(widget.quotation != null) {
-              widget.quotation!.documentID = value;
+            if(isQuotation) {
+              quotation!.documentID = value;
+            }
+            else{
+              invoice!.documentID = value;
             }
           },
           validator: (value) {
@@ -105,7 +138,7 @@ class _DocumentSFState extends State<DocumentSF> {
           textInputAction: TextInputAction.done,
           onChanged: (value){
             setState(() {
-              isQuotation ? (widget.quotation!.term = value) : (widget.invoice!.term = value);
+              isQuotation ? (quotation!.term = value) : (invoice!.term = value);
             });
           },
           validator: (value) {
@@ -125,10 +158,10 @@ class _DocumentSFState extends State<DocumentSF> {
           ),
           onTap: () async {
             DateTime? newDate;
-            if((isQuotation) ? (widget.quotation!.date!=null && widget.quotation!.date!='') : (widget.invoice!.date!=null && widget.invoice!.date!='')){
+            if((isQuotation) ? (quotation!.date!=null && quotation!.date!='') : (invoice!.date!=null && invoice!.date!='')){
               newDate = await showDatePicker(
                   context: context,
-                  initialDate: isQuotation ? DateTime.parse(widget.quotation!.date.toString()) : DateTime.parse(widget.invoice!.date.toString()),
+                  initialDate: isQuotation ? DateTime.parse(quotation!.date.toString()) : DateTime.parse(invoice!.date.toString()),
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2200)
               );
@@ -139,11 +172,11 @@ class _DocumentSFState extends State<DocumentSF> {
             if(newDate == null) return;
             //if 'OK'
             setState(() {
-              if(isQuotation == true){
-                widget.quotation!.date = newDate!;
+              if(isQuotation){
+                quotation!.date = newDate!;
               }
               else{
-                widget.invoice!.date = newDate!;
+                invoice!.date = newDate!;
               }
             });
             //update display
@@ -162,7 +195,7 @@ class _DocumentSFState extends State<DocumentSF> {
           textInputAction: TextInputAction.done,
           onChanged: (value){
             setState(() {
-              isQuotation ? (widget.quotation!.subjectTitle = value) : (widget.invoice!.subjectTitle = value);
+              isQuotation ? (quotation!.subjectTitle = value) : (invoice!.subjectTitle = value);
             });
           },
           validator: (value) {
@@ -173,5 +206,34 @@ class _DocumentSFState extends State<DocumentSF> {
         ),
       ],
     );
+  }
+
+  void updateQuotation(Quotation importedQuotation) {
+    //update document
+    invoice!.fileName = importedQuotation.fileName;
+    invoice!.documentID = importedQuotation.documentID;
+    invoice!.term = importedQuotation.term;
+    invoice!.date = importedQuotation.date;
+    invoice!.subjectTitle = importedQuotation.subjectTitle;
+
+    //update billing
+    invoice!.user.company = importedQuotation.user.company;
+    invoice!.user.name = importedQuotation.user.name;
+    invoice!.user.address1 = importedQuotation.user.address1;
+    invoice!.user.address2 = importedQuotation.user.address2;
+    invoice!.user.address3 = importedQuotation.user.address3;
+    invoice!.user.postalCode = importedQuotation.user.postalCode;
+    invoice!.user.hdphCC = importedQuotation.user.hdphCC;
+    invoice!.user.hdph = importedQuotation.user.hdph;
+    invoice!.user.officeCC = importedQuotation.user.officeCC;
+    invoice!.user.office = importedQuotation.user.office;
+    invoice!.user.email = importedQuotation.user.email;
+
+    //update item list
+    invoice!.itemSupply = importedQuotation.itemSupply;
+    invoice!.itemSections = importedQuotation.itemSections;
+
+    //update transport
+    invoice!.transport = importedQuotation.transport;
   }
 }

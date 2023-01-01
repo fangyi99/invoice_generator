@@ -1,12 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:invoice_generator/page/database.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-class BillingSF extends StatelessWidget {
+import '../../model/invoice.dart';
+import '../../model/quotation.dart';
+import '../../model/user.dart';
 
-  // final Map controllers;
-  //
-  // BillingSF({required this.controllers});
+class BillingSF extends StatefulWidget {
+
+  Quotation? quotation;
+  Invoice? invoice;
+  BillingSF({this.quotation, this.invoice});
+
+  @override
+  State<BillingSF> createState() => _BillingSFState();
+}
+
+class _BillingSFState extends State<BillingSF> {
+  Quotation? quotation;
+  Invoice? invoice;
+  late bool isQuotation;
 
   var unitNumberMask = new MaskTextInputFormatter(
       mask: '#~~-~~~~',
@@ -21,6 +35,22 @@ class BillingSF extends StatelessWidget {
   );
 
   @override
+  void initState() {
+    super.initState();
+    quotation = widget.quotation;
+    invoice = widget.invoice;
+
+    if(widget.quotation != null){
+      isQuotation = true;
+    }
+    else{
+      isQuotation = false;
+    }
+
+    initializeUser();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -31,28 +61,18 @@ class BillingSF extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 15.0),
             child: ElevatedButton(
               onPressed: () async {
-                // final importedUser = await Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => DBUser(export: true)),
-                // );
-                // controllers['companyController'].text = importedUser['company'];
-                // controllers['addresseeController'].text = importedUser['name'];
-                // controllers['addressL1Controller'].text = importedUser['addressL1'];
-                // controllers['addressL2Controller'].text = importedUser['addressL2'];
-                // controllers['addressL3Controller'].text = importedUser['addressL3'];
-                // controllers['postalCodeController'].text = importedUser['postalCode'];
-                // controllers['countryCodeController'].text = importedUser['countryCode'];
-                // controllers['hdphController'].text = importedUser['hdph'];
-                // controllers['countryCode2Controller'].text = importedUser['countryCode2'];
-                // controllers['officeController'].text = importedUser['office'];
-                // controllers['emailController'].text = importedUser['email'];
+                final importedUser = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Database(exportType: "user")),
+                );
+                updateUser(importedUser);
               },
               child: Text('Import User'),
             ),
           ),
         ),
         TextFormField(
-          // controller: controllers['companyController'],
+          controller: TextEditingController(text: isQuotation ? quotation!.user.company: invoice!.user.company),
           decoration: InputDecoration(
             labelText: 'Company Name',
             hintText: 'ABC Company',
@@ -62,7 +82,7 @@ class BillingSF extends StatelessWidget {
         ),
         SizedBox(height: 15),
         TextFormField(
-          // controller: controllers['addresseeController'],
+          controller: TextEditingController(text: isQuotation ? quotation!.user.name: invoice!.user.name),
           decoration: InputDecoration(
             labelText: 'Addressee / Attn *',
             hintText: 'Ms Emma',
@@ -78,7 +98,7 @@ class BillingSF extends StatelessWidget {
         ),
         SizedBox(height: 15),
         TextFormField(
-          // controller: controllers['addressL1Controller'],
+          controller: TextEditingController(text: isQuotation ? quotation!.user.address1: invoice!.user.address1),
           decoration: InputDecoration(
             labelText: 'Address Line 1 *',
             hintText: '39 Scotts Road',
@@ -89,7 +109,7 @@ class BillingSF extends StatelessWidget {
         ),
         SizedBox(height: 15),
         TextFormField(
-          // controller: controllers['addressL2Controller'],
+          controller: TextEditingController(text: isQuotation ? quotation!.user.address2: invoice!.user.address2),
           decoration: InputDecoration(
             labelText: 'Address Line 2 *',
             hintText: '#12-9181',
@@ -99,7 +119,7 @@ class BillingSF extends StatelessWidget {
         ),
         SizedBox(height: 15),
         TextFormField(
-          // controller: controllers['addressL3Controller'],
+          controller: TextEditingController(text: isQuotation ? quotation!.user.address3: invoice!.user.address3),
           decoration: InputDecoration(
             labelText: 'Address Line 3',
             hintText: 'The Inlands',
@@ -109,7 +129,7 @@ class BillingSF extends StatelessWidget {
         ),
         SizedBox(height: 15),
         TextFormField(
-          // controller: controllers['postalCodeController'],
+          controller: TextEditingController(text: isQuotation ? quotation!.user.postalCode: invoice!.user.postalCode),
           decoration: InputDecoration(
             labelText: 'Postal Code',
             hintText: '123456',
@@ -130,7 +150,7 @@ class BillingSF extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(right: 10.0),
                 child: TextFormField(
-                  // controller: controllers['countryCodeController'],
+                  controller: TextEditingController(text: isQuotation ? quotation!.user.hdphCC: invoice!.user.hdphCC),
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: EdgeInsets.all(15),
@@ -154,7 +174,7 @@ class BillingSF extends StatelessWidget {
             Expanded(
               flex: 7,
               child: TextFormField(
-                // controller: controllers['hdphController'],
+                controller: TextEditingController(text: isQuotation ? quotation!.user.hdph: invoice!.user.hdph),
                 decoration: InputDecoration(
                   labelText: 'Hdph *',
                   hintText: '1234 6678',
@@ -180,7 +200,7 @@ class BillingSF extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(right: 10.0),
                 child: TextFormField(
-                  // controller: controllers['countryCode2Controller'],
+                  controller: TextEditingController(text: isQuotation ? quotation!.user.officeCC: invoice!.user.officeCC),
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: EdgeInsets.all(10),
@@ -199,7 +219,7 @@ class BillingSF extends StatelessWidget {
             Expanded(
               flex: 7,
               child: TextFormField(
-                // controller: controllers['officeController'],
+                controller: TextEditingController(text: isQuotation ? quotation!.user.office: invoice!.user.office),
                 decoration: InputDecoration(
                   labelText: 'Office',
                   hintText: '1234 6678',
@@ -214,6 +234,7 @@ class BillingSF extends StatelessWidget {
         SizedBox(height: 15),
         TextFormField(
           // controller: controllers['emailController'],
+          controller: TextEditingController(text: isQuotation ? quotation!.user.email: invoice!.user.email),
           decoration: InputDecoration(
             labelText: 'Email',
             hintText: 'emma@gmail.com',
@@ -224,5 +245,65 @@ class BillingSF extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void updateUser(User importedUser){
+    setState((){
+      if(isQuotation == true){
+        quotation!.user.company = importedUser.company;
+        quotation!.user.name = importedUser.name;
+        quotation!.user.address1 = importedUser.address1;
+        quotation!.user.address2 = importedUser.address2;
+        quotation!.user.address3 = importedUser.address3;
+        quotation!.user.postalCode = importedUser.postalCode;
+        quotation!.user.hdphCC = importedUser.hdphCC;
+        quotation!.user.hdph = importedUser.hdph;
+        quotation!.user.officeCC = importedUser.officeCC;
+        quotation!.user.office = importedUser.office;
+        quotation!.user.email = importedUser.email;
+      }
+      else{
+        invoice!.user.company = importedUser.company;
+        invoice!.user.name = importedUser.name;
+        invoice!.user.address1 = importedUser.address1;
+        invoice!.user.address2 = importedUser.address2;
+        invoice!.user.address3 = importedUser.address3;
+        invoice!.user.postalCode = importedUser.postalCode;
+        invoice!.user.hdphCC = importedUser.hdphCC;
+        invoice!.user.hdph = importedUser.hdph;
+        invoice!.user.officeCC = importedUser.officeCC;
+        invoice!.user.office = importedUser.office;
+        invoice!.user.email = importedUser.email;
+      }
+    });
+  }
+
+  void initializeUser(){
+    if(isQuotation == true){
+      quotation!.user.company = "";
+      quotation!.user.name = "";
+      quotation!.user.address1 = "";
+      quotation!.user.address2 = "";
+      quotation!.user.address3 = "";
+      quotation!.user.postalCode = "";
+      quotation!.user.hdphCC = "";
+      quotation!.user.hdph = "";
+      quotation!.user.officeCC = "";
+      quotation!.user.office = "";
+      quotation!.user.email = "";
+    }
+    else{
+      invoice!.user.company = "";
+      invoice!.user.name = "";
+      invoice!.user.address1 = "";
+      invoice!.user.address2 = "";
+      invoice!.user.address3 = "";
+      invoice!.user.postalCode = "";
+      invoice!.user.hdphCC = "";
+      invoice!.user.hdph = "";
+      invoice!.user.officeCC = "";
+      invoice!.user.office = "";
+      invoice!.user.email = "";
+    }
   }
 }

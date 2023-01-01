@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:invoice_generator/page/invoiceForm.dart';
+import 'package:invoice_generator/page/quotationForm.dart';
 import 'package:invoice_generator/page/userForm.dart';
+import '../model/quotation.dart';
+import '../util/quotationDB.dart';
 import '../util/userDB.dart';
 import '../model/user.dart';
 
 class Database extends StatelessWidget {
-  Database({super.key});
+  String? exportType;
+  Database({super.key, this.exportType});
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -15,6 +19,7 @@ class Database extends StatelessWidget {
     return Scaffold(
       key: _scaffoldKey,
       body: DefaultTabController(
+        initialIndex: exportType == "user" ? 1 : 0,
         length: 2,
         child: Scaffold(
           appBar: AppBar(
@@ -27,7 +32,7 @@ class Database extends StatelessWidget {
             ),
             actions: [
               IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: () => {
                     navigateAndDisplayToastMsg(context, null)
                   }
@@ -36,7 +41,13 @@ class Database extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              Text("Quotation"),
+              ValueListenableBuilder<Box<Quotation>>(
+                  valueListenable: QuotationDB.getQuotations().listenable(),
+                  builder: (context, box, _){
+                    final quotations = box.values.toList().cast<Quotation>();
+                    return buildQuotationList(quotations);
+                  }
+              ),
               ValueListenableBuilder<Box<User>>(
                   valueListenable: UserDB.getUsers().listenable(),
                   builder: (context, box, _){
@@ -51,9 +62,95 @@ class Database extends StatelessWidget {
     );
   }
 
+  Widget buildQuotationList(List<Quotation> quotations) {
+    if (quotations.isEmpty) {
+      return const Center(
+        child: Text(
+          'No quotations yet!',
+          style: TextStyle(fontSize: 24),
+        ),
+      );
+    } else {
+      return Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: quotations.length,
+              itemBuilder: (BuildContext context, int index) {
+                final transaction = quotations[index];
+
+                return buildQuotationCard(context, index, transaction);
+              },
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  Widget buildQuotationCard(BuildContext context, int index, Quotation quotation) {
+
+    return Card(
+      child: Slidable(
+        key: ValueKey(index),
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          children: [
+            SlidableAction(
+              backgroundColor: Colors.orangeAccent,
+              icon: Icons.copy,
+              onPressed: (context) {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => QuotationForm(formType: "quotation", formMode: "duplicate", data: widget.filteredQuotationList[index])),
+                // );
+              },
+            ),
+            SlidableAction(
+              backgroundColor: Colors.blue,
+              icon: Icons.edit,
+              onPressed: (context) {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => QuotationForm(formType: "quotation", formMode: "update", data: widget.filteredQuotationList[index])),
+                // );
+              },
+            ),
+            SlidableAction(
+              backgroundColor: Colors.red,
+              icon: Icons.delete,
+              onPressed: (context) {
+                QuotationDB.deleteQuotation(context, quotation);
+              },
+            )
+          ],
+        ),
+        child: ListTile(
+          title: Text(quotation.fileName),
+          onTap: () => {
+            // if(exportType == "quotation"){
+            //   //navigate to invoice form for import
+            //   Navigator.push(
+            //     context,
+            //     MaterialPageRoute(builder: (context) => InvoiceForm(formMode: 'read', user: user)),
+            //   )
+            // }else{
+            //   //navigate to quotation form for update
+            //   Navigator.push(
+            //     context,
+            //     MaterialPageRoute(builder: (context) => QuotationForm(formMode: 'read', user: user)),
+            //   )
+            // }
+          },
+        ),
+      ),
+    );
+  }
+
   Widget buildUserList(List<User> users) {
     if (users.isEmpty) {
-      return Center(
+      return const Center(
         child: Text(
           'No users yet!',
           style: TextStyle(fontSize: 24),
@@ -64,7 +161,7 @@ class Database extends StatelessWidget {
         children: [
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               itemCount: users.length,
               itemBuilder: (BuildContext context, int index) {
                 final transaction = users[index];
@@ -84,7 +181,7 @@ class Database extends StatelessWidget {
       child: Slidable(
         key: ValueKey(index),
         endActionPane: ActionPane(
-          motion: DrawerMotion(),
+          motion: const DrawerMotion(),
           children: [
             SlidableAction(
               backgroundColor: Colors.blue,
@@ -108,14 +205,14 @@ class Database extends StatelessWidget {
           title: Text(user.name),
           subtitle: (user.company != '') ? Text(user.company!) : null,
           onTap: () => {
-            // if(widget.export == true){
-            //   Navigator.pop(context, widget.filteredUserList[index])
-            // }else{
+            if(exportType == "user"){
+              Navigator.pop(context, user)
+            }else{
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => UserForm(formMode: 'read', user: user)),
               )
-            // }
+            }
           },
         ),
       ),

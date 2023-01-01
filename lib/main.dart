@@ -3,9 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:invoice_generator/model/TnC.dart';
+import 'package:invoice_generator/model/tnC.dart';
 import 'package:invoice_generator/model/item.dart';
 import 'package:invoice_generator/model/itemSection.dart';
 import 'package:invoice_generator/model/transport.dart';
@@ -13,6 +12,7 @@ import 'package:invoice_generator/model/user.dart';
 import 'package:invoice_generator/page/database.dart';
 import 'package:invoice_generator/page/invoiceForm.dart';
 import 'package:invoice_generator/page/quotationForm.dart';
+import 'package:invoice_generator/util/quotationDB.dart';
 
 import 'model/addOn.dart';
 import 'model/deduction.dart';
@@ -23,10 +23,20 @@ import 'model/quotation.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  //initialize hive
+  // initialize hive
   await Hive.initFlutter();
+  Hive.registerAdapter(QuotationAdapter());
+  await Hive.openBox<Quotation>('quotations');
   Hive.registerAdapter(UserAdapter());
   await Hive.openBox<User>('users');
+  Hive.registerAdapter(ItemSectionAdapter());
+  await Hive.openBox<Quotation>('itemSections');
+  Hive.registerAdapter(ItemAdapter());
+  await Hive.openBox<Quotation>('items');
+  Hive.registerAdapter(TransportAdapter());
+  await Hive.openBox<Quotation>('transports');
+  Hive.registerAdapter(TnCAdapter());
+  await Hive.openBox<Quotation>('tnCs');
 
   runApp(
       const MaterialApp(
@@ -65,15 +75,21 @@ class Index extends StatelessWidget{
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size.fromHeight(50), // NEW
                             ),
-                            onPressed: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => QuotationForm(
+                            onPressed: () async {
+
+                              var quotation = Quotation(fileName: "", documentID: "", term: "C.O.D", subjectTitle: "", itemSupply: "Labour & Materials",
+                                  date: DateTime.now(), user: User(), itemSections: [ItemSection(type:"Default", itemList: [Item()])], transport: Transport(type: "Two Way"), tnC: TnC());
+
+                              QuotationDB.createQuotation(quotation).then((value) => {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => QuotationForm(
                                   formMode: "create",
-                                  quotation: Quotation("", "", "C.O.D", "", "Labour & Materials", DateTime.now(),User(),[ItemSection(type:"Default", itemList: [Item()])], Transport(type: "Two Way"),TnC())
-                                ),
+                                  quotation: quotation
+                                  ))
                                 )
-                              )
+                              });
+
                             },
                             child: const Text(
                               'Q U O T A T I O N',
