@@ -25,17 +25,19 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   // initialize hive
   await Hive.initFlutter();
+
   Hive.registerAdapter(QuotationAdapter());
-  await Hive.openBox<Quotation>('quotations');
   Hive.registerAdapter(UserAdapter());
-  await Hive.openBox<User>('users');
   Hive.registerAdapter(ItemSectionAdapter());
-  await Hive.openBox<Quotation>('itemSections');
   Hive.registerAdapter(ItemAdapter());
-  await Hive.openBox<Quotation>('items');
   Hive.registerAdapter(TransportAdapter());
-  await Hive.openBox<Quotation>('transports');
   Hive.registerAdapter(TnCAdapter());
+
+  await Hive.openBox<Quotation>('quotations');
+  await Hive.openBox<User>('users');
+  await Hive.openBox<Quotation>('itemSections');
+  await Hive.openBox<Quotation>('items');
+  await Hive.openBox<Quotation>('transports');
   await Hive.openBox<Quotation>('tnCs');
 
   runApp(

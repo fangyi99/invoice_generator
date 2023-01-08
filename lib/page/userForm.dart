@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:invoice_generator/util/userDB.dart';
 import '../model/user.dart';
 
@@ -7,7 +8,7 @@ class UserForm extends StatefulWidget {
   String formMode;
   User? user;
 
-  UserForm({required this.formMode, this.user});
+  UserForm({Key? key, required this.formMode, this.user}) : super(key: key);
 
   @override
   State<UserForm> createState() => UserFormState();
@@ -20,7 +21,7 @@ class UserFormState extends State<UserForm> {
 
   // @override
   // void dispose(){
-  //   Hive.close();
+  //   Hive.box("users").close;
   //
   //   super.dispose();
   // }

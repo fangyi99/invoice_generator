@@ -12,7 +12,7 @@ class QuotationForm extends StatefulWidget {
 
   final String formMode;
   Quotation? quotation;
-  QuotationForm({required this.formMode, required this.quotation});
+  QuotationForm({Key? key, required this.formMode, required this.quotation}) : super(key: key);
 
   @override
   State<QuotationForm> createState() => QuotationFormState();

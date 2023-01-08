@@ -10,7 +10,7 @@ class ItemSF extends StatefulWidget {
 
   Quotation? quotation;
   Invoice? invoice;
-  ItemSF({this.quotation, this.invoice});
+  ItemSF({Key? key, this.quotation, this.invoice}) : super(key: key);
 
   @override
   State<ItemSF> createState() => _ItemSFState();
@@ -228,8 +228,11 @@ class _ItemSFState extends State<ItemSF> {
           textInputAction: TextInputAction.newline,
           onChanged: (value) => {
             if(value != ''){
-              item.methodStm = "/nvalue"
+              item.methodStm = "/n$value"
             },
+          },
+          onEditingComplete: (){
+            item.methodStm = item.methodStm.replaceAll(RegExp(r'(\n)'), '/n');
           },
           keyboardType: TextInputType.multiline,
           maxLines: null,

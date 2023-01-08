@@ -7,6 +7,7 @@ class RadioGroup extends StatelessWidget {
   dynamic onChange;
 
   RadioGroup({
+    super.key,
     required this.display,
     required this.radioIndex,
     required this.selectedIndex,

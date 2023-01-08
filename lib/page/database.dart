@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:invoice_generator/page/invoiceForm.dart';
-import 'package:invoice_generator/page/quotationForm.dart';
 import 'package:invoice_generator/page/userForm.dart';
 import '../model/quotation.dart';
 import '../util/quotationDB.dart';
@@ -129,6 +127,9 @@ class Database extends StatelessWidget {
         child: ListTile(
           title: Text(quotation.fileName),
           onTap: () => {
+            if(exportType == "quotation"){
+              Navigator.pop(context, quotation)
+            }
             // if(exportType == "quotation"){
             //   //navigate to invoice form for import
             //   Navigator.push(

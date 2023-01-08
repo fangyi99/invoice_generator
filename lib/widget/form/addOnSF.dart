@@ -7,7 +7,7 @@ import '../../model/invoice.dart';
 class AddOnSF extends StatefulWidget{
 
   Invoice invoice;
-  AddOnSF({required this.invoice});
+  AddOnSF({Key? key, required this.invoice}) : super(key: key);
 
   @override
   State<AddOnSF> createState() => AddOnSFState();

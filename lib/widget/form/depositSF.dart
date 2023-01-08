@@ -8,7 +8,7 @@ import '../radioGroup.dart';
 class DepositSF extends StatefulWidget {
 
   Invoice invoice;
-  DepositSF({required this.invoice});
+  DepositSF({Key? key, required this.invoice}) : super(key: key);
 
   @override
   State<DepositSF> createState() => _DepositFormState();

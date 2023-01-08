@@ -6,7 +6,7 @@ class TnCSF extends StatefulWidget {
 
   Quotation? quotation;
 
-  TnCSF({required this.quotation});
+  TnCSF({Key? key, required this.quotation}) : super(key: key);
 
   @override
   State<TnCSF> createState() => _TnCSFState();

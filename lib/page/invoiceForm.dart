@@ -13,7 +13,7 @@ class InvoiceForm extends StatefulWidget {
 
   String formMode;
   Invoice invoice;
-  InvoiceForm({required this.invoice, required this.formMode});
+  InvoiceForm({super.key, required this.invoice, required this.formMode});
 
   @override
   State<InvoiceForm> createState() => InvoiceFormState();

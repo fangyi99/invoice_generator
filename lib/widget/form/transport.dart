@@ -8,7 +8,8 @@ class TransportSF extends StatefulWidget {
 
   Quotation? quotation;
   Invoice? invoice;
-  TransportSF({this.quotation, this.invoice});
+  static TextEditingController amountController = TextEditingController();
+  TransportSF({Key? key, this.quotation, this.invoice}) : super(key: key);
 
   @override
   State<TransportSF> createState() => _TransportSFState();
@@ -17,10 +18,15 @@ class TransportSF extends StatefulWidget {
 
 class _TransportSFState extends State<TransportSF> {
   List<String> transportList = ['One Way', 'Two Way', 'Self Collect', 'Others'];
+  Quotation? quotation;
+  Invoice? invoice;
   late bool isQuotation;
 
   @override
   void initState(){
+    quotation = widget.quotation;
+    invoice = widget.invoice;
+
     if(widget.quotation != null){
       isQuotation = true;
     }
@@ -45,7 +51,7 @@ class _TransportSFState extends State<TransportSF> {
                     selectedIndex: selectedIndex,
                     onChange: (){
                       setState((){
-                        isQuotation ? widget.quotation!.transport.type = transportList[0] : widget.invoice!.transport.type = transportList[0];
+                        isQuotation ? quotation!.transport.type = transportList[0] : invoice!.transport.type = transportList[0];
                       });
                     }
                 )
@@ -57,7 +63,7 @@ class _TransportSFState extends State<TransportSF> {
                     selectedIndex: selectedIndex,
                     onChange: (){
                       setState((){
-                        isQuotation ? widget.quotation!.transport.type = transportList[1] : widget.invoice!.transport.type = transportList[1];
+                        isQuotation ? quotation!.transport.type = transportList[1] : invoice!.transport.type = transportList[1];
                       });
                     }
                 )
@@ -69,8 +75,8 @@ class _TransportSFState extends State<TransportSF> {
                     selectedIndex: selectedIndex,
                     onChange: (){
                       setState((){
-                        isQuotation ? (widget.quotation!.transport.type = "Self Collection") : (widget.invoice!.transport.type = "Self Collection");
-                        isQuotation ? (widget.quotation!.transport.amount = 0) : (widget.invoice!.transport.amount = 0);
+                        isQuotation ? (quotation!.transport.type = "Self Collection") : (invoice!.transport.type = "Self Collection");
+                        isQuotation ? (quotation!.transport.amount = 0) : (invoice!.transport.amount = 0);
                       });
                     }
                 )
@@ -82,7 +88,7 @@ class _TransportSFState extends State<TransportSF> {
                     selectedIndex: selectedIndex,
                     onChange: (){
                       setState((){
-                        isQuotation ? (widget.quotation!.transport.type = transportList[3]) : (widget.invoice!.transport.type = transportList[3]);
+                        isQuotation ? (quotation!.transport.type = transportList[3]) : (invoice!.transport.type = transportList[3]);
                       });
                     }
                 )
@@ -101,7 +107,7 @@ class _TransportSFState extends State<TransportSF> {
               textInputAction: TextInputAction.done,
               onChanged: (value){
                 setState((){
-                  isQuotation ? (widget.quotation!.transport.otherType = value) : (widget.invoice!.transport.otherType = value);
+                  isQuotation ? (quotation!.transport.otherType = value) : (invoice!.transport.otherType = value);
                 });
               },
             ),
@@ -109,6 +115,7 @@ class _TransportSFState extends State<TransportSF> {
         ),
         SizedBox(height: 15),
         TextFormField(
+          controller: TransportSF.amountController,
           enabled: selectedIndex == 2 ? false : true,
           decoration: InputDecoration(
             prefixIcon: Padding(
@@ -121,6 +128,11 @@ class _TransportSFState extends State<TransportSF> {
           ),
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.done,
+          onChanged: (value){
+            setState(() {
+              isQuotation ? (quotation!.transport.amount = double.parse(value)) : (invoice!.transport.amount = double.parse(value));
+            });
+          },
           validator: (value) {
             if(value == null || value.isEmpty)
               return 'This field is required.';

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:invoice_generator/widget/form/billingSF.dart';
+import 'package:invoice_generator/widget/form/transport.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../../model/invoice.dart';
@@ -13,7 +15,7 @@ class DocumentSF extends StatefulWidget {
   Quotation? quotation;
   Invoice? invoice;
 
-  DocumentSF({required this.mode, this.quotation, this.invoice});
+  DocumentSF({Key? key, required this.mode, this.quotation, this.invoice}) : super(key: key);
 
   @override
   State<DocumentSF> createState() => _DocumentSFState();
@@ -49,14 +51,17 @@ class _DocumentSFState extends State<DocumentSF> {
     type: MaskAutoCompletionType.eager,
   );
 
+  TextEditingController fileNameController = TextEditingController();
+  TextEditingController documentIdController = TextEditingController();
+  TextEditingController termsController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+  TextEditingController subjectController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
 
     return Column(
       children: [
-        // SizedBox(height: 5),
         Visibility(
           visible: !isQuotation,
           child: SizedBox(
@@ -79,6 +84,7 @@ class _DocumentSFState extends State<DocumentSF> {
         ),
         // SizedBox(height: 5),
         TextFormField(
+          controller: fileNameController,
           maxLines: null,
           enabled: widget.mode!="update",
           decoration: InputDecoration(
@@ -107,6 +113,7 @@ class _DocumentSFState extends State<DocumentSF> {
         ),
         SizedBox(height: 15),
         TextFormField(
+          controller: documentIdController,
           inputFormatters: isQuotation ? [quoNumberMask] : [invNumberMask],
           decoration: InputDecoration(
             labelText: isQuotation ?  'Quotation No. *' : 'Invoice No. *',
@@ -131,6 +138,7 @@ class _DocumentSFState extends State<DocumentSF> {
         ),
         SizedBox(height: 15),
         TextFormField(
+          controller: termsController,
           decoration: InputDecoration(
             labelText: 'Terms *',
             border: OutlineInputBorder(),
@@ -186,6 +194,7 @@ class _DocumentSFState extends State<DocumentSF> {
         ),
         SizedBox(height: 15),
         TextFormField(
+          controller: subjectController,
           maxLines: null,
           decoration: InputDecoration(
             labelText: 'Subject Title *',
@@ -209,31 +218,56 @@ class _DocumentSFState extends State<DocumentSF> {
   }
 
   void updateQuotation(Quotation importedQuotation) {
-    //update document
-    invoice!.fileName = importedQuotation.fileName;
-    invoice!.documentID = importedQuotation.documentID;
-    invoice!.term = importedQuotation.term;
-    invoice!.date = importedQuotation.date;
-    invoice!.subjectTitle = importedQuotation.subjectTitle;
+    setState(() {
+      //update document
+      invoice!.fileName = importedQuotation.fileName;
+      invoice!.documentID = importedQuotation.documentID;
+      invoice!.term = importedQuotation.term;
+      invoice!.date = importedQuotation.date;
+      invoice!.subjectTitle = importedQuotation.subjectTitle;
 
-    //update billing
-    invoice!.user.company = importedQuotation.user.company;
-    invoice!.user.name = importedQuotation.user.name;
-    invoice!.user.address1 = importedQuotation.user.address1;
-    invoice!.user.address2 = importedQuotation.user.address2;
-    invoice!.user.address3 = importedQuotation.user.address3;
-    invoice!.user.postalCode = importedQuotation.user.postalCode;
-    invoice!.user.hdphCC = importedQuotation.user.hdphCC;
-    invoice!.user.hdph = importedQuotation.user.hdph;
-    invoice!.user.officeCC = importedQuotation.user.officeCC;
-    invoice!.user.office = importedQuotation.user.office;
-    invoice!.user.email = importedQuotation.user.email;
+      //update billing
+      invoice!.user.company = importedQuotation.user.company;
+      invoice!.user.name = importedQuotation.user.name;
+      invoice!.user.address1 = importedQuotation.user.address1;
+      invoice!.user.address2 = importedQuotation.user.address2;
+      invoice!.user.address3 = importedQuotation.user.address3;
+      invoice!.user.postalCode = importedQuotation.user.postalCode;
+      invoice!.user.hdphCC = importedQuotation.user.hdphCC;
+      invoice!.user.hdph = importedQuotation.user.hdph;
+      invoice!.user.officeCC = importedQuotation.user.officeCC;
+      invoice!.user.office = importedQuotation.user.office;
+      invoice!.user.email = importedQuotation.user.email;
 
-    //update item list
-    invoice!.itemSupply = importedQuotation.itemSupply;
-    invoice!.itemSections = importedQuotation.itemSections;
+      //update item list
+      invoice!.itemSupply = importedQuotation.itemSupply;
+      invoice!.itemSections = importedQuotation.itemSections;
 
-    //update transport
-    invoice!.transport = importedQuotation.transport;
+      //update transport
+      invoice!.transport = importedQuotation.transport;
+
+      //update controllers
+      //update document controllers
+      fileNameController.text = invoice!.fileName;
+      documentIdController.text = invoice!.documentID.replaceAll("Q", "");
+      termsController.text = invoice!.term;
+      dateController.text = DateFormat('d-MMM-yyyy').format(invoice!.date);
+      subjectController.text = invoice!.subjectTitle!;
+      //update billing controllers
+      BillingSF.companyController.text = invoice!.user.company!;
+      BillingSF.nameController.text = invoice!.user.name!;
+      BillingSF.addressL1Controller.text = invoice!.user.address1!;
+      BillingSF.addressL2Controller.text = invoice!.user.address2!;
+      BillingSF.addressL3Controller.text = invoice!.user.address3!;
+      BillingSF.postalCodeController.text = invoice!.user.postalCode!;
+      BillingSF.hdphCCController.text = invoice!.user.hdphCC!;
+      BillingSF.hdphController.text = invoice!.user.hdph!;
+      BillingSF.officeCCController.text = invoice!.user.officeCC!;
+      BillingSF.officeController.text = invoice!.user.office!;
+      BillingSF.emailController.text = invoice!.user.email!;
+      //update transport controller
+      TransportSF.amountController.text = invoice!.transport.amount.toString();
+
+    });
   }
 }
