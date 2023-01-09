@@ -77,6 +77,7 @@ class _TransportSFState extends State<TransportSF> {
                       setState((){
                         isQuotation ? (quotation!.transport.type = "Self Collection") : (invoice!.transport.type = "Self Collection");
                         isQuotation ? (quotation!.transport.amount = 0) : (invoice!.transport.amount = 0);
+                        TransportSF.amountController.text = "0";
                       });
                     }
                 )

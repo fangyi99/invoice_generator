@@ -11,6 +11,7 @@ import '../widget/form/tncSF.dart';
 class QuotationForm extends StatefulWidget {
 
   final String formMode;
+  bool saved = false;
   Quotation? quotation;
   QuotationForm({Key? key, required this.formMode, required this.quotation}) : super(key: key);
 
@@ -77,9 +78,35 @@ class QuotationFormState extends State<QuotationForm> {
                   ),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: controls.onStepContinue,
+                      onPressed:
+                          // (){
+                        // if(isLastStep){
+                        //   if(widget.formMode == "update"){
+                        //     QuotationDB.updateQuotation(widget.quotation!);
+                        //   }
+                        //   else{
+                        //     //exit to main page
+                        //     if(widget.saved == false){
+                        //       showDialog(context: context, builder: (context) => AlertDialog(
+                        //         title: Text("Leave quotation?"),
+                        //         content: Text("Changes you made so far will not be saved"),
+                        //         actions: [
+                        //           TextButton(onPressed: () => Navigator.pop(context), child: Text("CANCEL")),
+                        //           TextButton(onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst), child: Text("YES"))
+                        //         ],
+                        //       ));
+                        //     }
+                        //     else{
+                        //       Navigator.of(context).popUntil((route) => route.isFirst);
+                        //     }
+                        //   }
+                        // }
+                        // else{
+                          controls.onStepContinue,
+                        // }
+                      // },
                       child: (isLastStep)
-                          ? const Text('Submit')
+                          ? const Text('View Preview')
                           : const Text('Next'),
                     ),
                   ),

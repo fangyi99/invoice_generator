@@ -24,7 +24,7 @@ class DocumentSF extends StatefulWidget {
 class _DocumentSFState extends State<DocumentSF> {
   Quotation? quotation;
   Invoice? invoice;
-  late bool isQuotation;
+  late bool isQuotation, fileNameEnabled=false;
 
   @override
   void initState(){
@@ -33,10 +33,14 @@ class _DocumentSFState extends State<DocumentSF> {
 
     if(widget.quotation != null){
       isQuotation = true;
+      if(widget.mode=="update" || widget.mode=="duplicate"){
+        updateQuotation(quotation!);
+      }
     }
     else{
       isQuotation = false;
     }
+
   }
 
   var quoNumberMask = new MaskTextInputFormatter(
@@ -53,8 +57,8 @@ class _DocumentSFState extends State<DocumentSF> {
 
   TextEditingController fileNameController = TextEditingController();
   TextEditingController documentIdController = TextEditingController();
-  TextEditingController termsController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
+  TextEditingController termsController = TextEditingController(text: "C.O.D");
+  TextEditingController dateController = TextEditingController(text: DateFormat('d-MMM-yyyy').format(DateTime.now()));
   TextEditingController subjectController = TextEditingController();
 
   @override
@@ -86,8 +90,15 @@ class _DocumentSFState extends State<DocumentSF> {
         TextFormField(
           controller: fileNameController,
           maxLines: null,
-          enabled: widget.mode!="update",
+          // readOnly: fileNameEnabled,
           decoration: InputDecoration(
+            // suffixIcon: IconButton(
+            //   color: fileNameEnabled ? Colors.cyan : Colors.grey,
+            //     icon: Icon(Icons.remove_circle),
+            //     onPressed: () {
+            //       fileNameEnabled = !fileNameEnabled;
+            //     }
+            // ),
             labelText: 'PDF File Name *',
             border: OutlineInputBorder(),
             errorMaxLines: 3,
@@ -219,54 +230,85 @@ class _DocumentSFState extends State<DocumentSF> {
 
   void updateQuotation(Quotation importedQuotation) {
     setState(() {
-      //update document
-      invoice!.fileName = importedQuotation.fileName;
-      invoice!.documentID = importedQuotation.documentID;
-      invoice!.term = importedQuotation.term;
-      invoice!.date = importedQuotation.date;
-      invoice!.subjectTitle = importedQuotation.subjectTitle;
+      if(isQuotation){
+        //update quotation values
+        //update document
+        quotation!.fileName = widget.mode=="duplicate" ? importedQuotation.fileName + " copy" : importedQuotation.fileName;
+        quotation!.documentID = importedQuotation.documentID;
+        quotation!.term = importedQuotation.term;
+        quotation!.date = importedQuotation.date;
+        quotation!.subjectTitle = importedQuotation.subjectTitle;
 
-      //update billing
-      invoice!.user.company = importedQuotation.user.company;
-      invoice!.user.name = importedQuotation.user.name;
-      invoice!.user.address1 = importedQuotation.user.address1;
-      invoice!.user.address2 = importedQuotation.user.address2;
-      invoice!.user.address3 = importedQuotation.user.address3;
-      invoice!.user.postalCode = importedQuotation.user.postalCode;
-      invoice!.user.hdphCC = importedQuotation.user.hdphCC;
-      invoice!.user.hdph = importedQuotation.user.hdph;
-      invoice!.user.officeCC = importedQuotation.user.officeCC;
-      invoice!.user.office = importedQuotation.user.office;
-      invoice!.user.email = importedQuotation.user.email;
+        //update billing
+        quotation!.user.company = importedQuotation.user.company;
+        quotation!.user.name = importedQuotation.user.name;
+        quotation!.user.address1 = importedQuotation.user.address1;
+        quotation!.user.address2 = importedQuotation.user.address2;
+        quotation!.user.address3 = importedQuotation.user.address3;
+        quotation!.user.postalCode = importedQuotation.user.postalCode;
+        quotation!.user.hdphCC = importedQuotation.user.hdphCC;
+        quotation!.user.hdph = importedQuotation.user.hdph;
+        quotation!.user.officeCC = importedQuotation.user.officeCC;
+        quotation!.user.office = importedQuotation.user.office;
+        quotation!.user.email = importedQuotation.user.email;
 
-      //update item list
-      invoice!.itemSupply = importedQuotation.itemSupply;
-      invoice!.itemSections = importedQuotation.itemSections;
+        //update item list
+        quotation!.itemSupply = importedQuotation.itemSupply;
+        quotation!.itemSections = importedQuotation.itemSections;
 
-      //update transport
-      invoice!.transport = importedQuotation.transport;
+        //update transport
+        quotation!.transport = importedQuotation.transport;
+      }else{
+        //update invoice values
+        //update document
+        invoice!.fileName = importedQuotation.fileName;
+        invoice!.documentID = importedQuotation.documentID;
+        invoice!.term = importedQuotation.term;
+        invoice!.date = importedQuotation.date;
+        invoice!.subjectTitle = importedQuotation.subjectTitle;
+
+        //update billing
+        invoice!.user.company = importedQuotation.user.company;
+        invoice!.user.name = importedQuotation.user.name;
+        invoice!.user.address1 = importedQuotation.user.address1;
+        invoice!.user.address2 = importedQuotation.user.address2;
+        invoice!.user.address3 = importedQuotation.user.address3;
+        invoice!.user.postalCode = importedQuotation.user.postalCode;
+        invoice!.user.hdphCC = importedQuotation.user.hdphCC;
+        invoice!.user.hdph = importedQuotation.user.hdph;
+        invoice!.user.officeCC = importedQuotation.user.officeCC;
+        invoice!.user.office = importedQuotation.user.office;
+        invoice!.user.email = importedQuotation.user.email;
+
+        //update item list
+        invoice!.itemSupply = importedQuotation.itemSupply;
+        invoice!.itemSections = importedQuotation.itemSections;
+
+        //update transport
+        invoice!.transport = importedQuotation.transport;
+      }
 
       //update controllers
       //update document controllers
-      fileNameController.text = invoice!.fileName;
-      documentIdController.text = invoice!.documentID.replaceAll("Q", "");
-      termsController.text = invoice!.term;
-      dateController.text = DateFormat('d-MMM-yyyy').format(invoice!.date);
-      subjectController.text = invoice!.subjectTitle!;
+      fileNameController.text = importedQuotation.fileName;
+      documentIdController.text = importedQuotation.documentID.replaceAll("Q", "");
+      termsController.text = importedQuotation.term;
+      dateController.text = DateFormat('d-MMM-yyyy').format(importedQuotation.date);
+      subjectController.text = importedQuotation.subjectTitle!;
       //update billing controllers
-      BillingSF.companyController.text = invoice!.user.company!;
-      BillingSF.nameController.text = invoice!.user.name!;
-      BillingSF.addressL1Controller.text = invoice!.user.address1!;
-      BillingSF.addressL2Controller.text = invoice!.user.address2!;
-      BillingSF.addressL3Controller.text = invoice!.user.address3!;
-      BillingSF.postalCodeController.text = invoice!.user.postalCode!;
-      BillingSF.hdphCCController.text = invoice!.user.hdphCC!;
-      BillingSF.hdphController.text = invoice!.user.hdph!;
-      BillingSF.officeCCController.text = invoice!.user.officeCC!;
-      BillingSF.officeController.text = invoice!.user.office!;
-      BillingSF.emailController.text = invoice!.user.email!;
+      BillingSF.companyController.text = importedQuotation.user.company!;
+      BillingSF.nameController.text = importedQuotation.user.name!;
+      BillingSF.addressL1Controller.text = importedQuotation.user.address1!;
+      BillingSF.addressL2Controller.text = importedQuotation.user.address2!;
+      BillingSF.addressL3Controller.text = importedQuotation.user.address3!;
+      BillingSF.postalCodeController.text = importedQuotation.user.postalCode!;
+      BillingSF.hdphCCController.text = importedQuotation.user.hdphCC!;
+      BillingSF.hdphController.text = importedQuotation.user.hdph!;
+      BillingSF.officeCCController.text = importedQuotation.user.officeCC!;
+      BillingSF.officeController.text = importedQuotation.user.office!;
+      BillingSF.emailController.text = importedQuotation.user.email!;
       //update transport controller
-      TransportSF.amountController.text = invoice!.transport.amount.toString();
+      TransportSF.amountController.text = importedQuotation.transport.amount.toString();
 
     });
   }

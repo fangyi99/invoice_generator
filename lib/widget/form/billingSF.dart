@@ -61,26 +61,11 @@ class _BillingSFState extends State<BillingSF> {
     else{
       isQuotation = false;
     }
-
-    initializeUser();
   }
 
 
   @override
   Widget build(BuildContext context) {
-
-    // BillingSF.companyController.text = (isQuotation ? quotation!.user.company: invoice!.user.company)!;
-    // BillingSF.nameController.text = (isQuotation ? quotation!.user.name: invoice!.user.name)!;
-    // BillingSF.addressL1Controller.text = (isQuotation ? quotation!.user.address1: invoice!.user.address1)!;
-    // BillingSF.addressL2Controller.text = (isQuotation ? quotation!.user.address2: invoice!.user.address2)!;
-    // BillingSF.addressL3Controller.text = (isQuotation ? quotation!.user.address3: invoice!.user.address3)!;
-    // BillingSF.postalCodeController.text = (isQuotation ? quotation!.user.postalCode: invoice!.user.postalCode)!;
-    // BillingSF.hdphCCController.text = (isQuotation ? quotation!.user.hdphCC: invoice!.user.hdphCC)!;
-    // BillingSF.hdphController.text = (isQuotation ? quotation!.user.hdph: invoice!.user.hdph)!;
-    // BillingSF.officeCCController.text = (isQuotation ? quotation!.user.officeCC: invoice!.user.officeCC)!;
-    // BillingSF.officeController.text = (isQuotation ? quotation!.user.office: invoice!.user.office)!;
-    // BillingSF.emailController.text = (isQuotation ? quotation!.user.email: invoice!.user.email)!;
-
     return Column(
       children: [
         SizedBox(
@@ -387,32 +372,4 @@ class _BillingSFState extends State<BillingSF> {
     });
   }
 
-  void initializeUser(){
-    if(isQuotation == true){
-      quotation!.user.company = "";
-      quotation!.user.name = "";
-      quotation!.user.address1 = "";
-      quotation!.user.address2 = "";
-      quotation!.user.address3 = "";
-      quotation!.user.postalCode = "";
-      quotation!.user.hdphCC = "";
-      quotation!.user.hdph = "";
-      quotation!.user.officeCC = "";
-      quotation!.user.office = "";
-      quotation!.user.email = "";
-    }
-    else{
-      invoice!.user.company = "";
-      invoice!.user.name = "";
-      invoice!.user.address1 = "";
-      invoice!.user.address2 = "";
-      invoice!.user.address3 = "";
-      invoice!.user.postalCode = "";
-      invoice!.user.hdphCC = "";
-      invoice!.user.hdph = "";
-      invoice!.user.officeCC = "";
-      invoice!.user.office = "";
-      invoice!.user.email = "";
-    }
-  }
 }

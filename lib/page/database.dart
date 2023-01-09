@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:invoice_generator/page/quotationForm.dart';
 import 'package:invoice_generator/page/userForm.dart';
 import '../model/quotation.dart';
 import '../util/quotationDB.dart';
@@ -99,6 +100,10 @@ class Database extends StatelessWidget {
               backgroundColor: Colors.orangeAccent,
               icon: Icons.copy,
               onPressed: (context) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => QuotationForm(formMode: 'duplicate', quotation: quotation)),
+                );
                 // Navigator.push(
                 //   context,
                 //   MaterialPageRoute(builder: (context) => QuotationForm(formType: "quotation", formMode: "duplicate", data: widget.filteredQuotationList[index])),
@@ -109,10 +114,10 @@ class Database extends StatelessWidget {
               backgroundColor: Colors.blue,
               icon: Icons.edit,
               onPressed: (context) {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => QuotationForm(formType: "quotation", formMode: "update", data: widget.filteredQuotationList[index])),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => QuotationForm(formMode: 'update', quotation: quotation)),
+                );
               },
             ),
             SlidableAction(
@@ -128,21 +133,15 @@ class Database extends StatelessWidget {
           title: Text(quotation.fileName),
           onTap: () => {
             if(exportType == "quotation"){
+              //navigate to invoice form to use quotation
               Navigator.pop(context, quotation)
+            }else{
+                //navigate to quotation form to update quotation
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => QuotationForm(formMode: 'update', quotation: quotation)),
+                )
             }
-            // if(exportType == "quotation"){
-            //   //navigate to invoice form for import
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => InvoiceForm(formMode: 'read', user: user)),
-            //   )
-            // }else{
-            //   //navigate to quotation form for update
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => QuotationForm(formMode: 'read', user: user)),
-            //   )
-            // }
           },
         ),
       ),
