@@ -77,7 +77,7 @@ class InvoiceFormState extends State<InvoiceForm> {
                 ),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: controls.onStepContinue,
+                    onPressed: isLastStep ? previewPDF : controls.onStepContinue,
                     child: (isLastStep)
                         ? const Text('Submit')
                         : const Text('Next'),
@@ -134,5 +134,12 @@ class InvoiceFormState extends State<InvoiceForm> {
       )
     ];
     return steps;
+  }
+
+  previewPDF(){
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => PDFView())
+    // );
   }
 }

@@ -11,6 +11,7 @@ import '../model/user.dart';
 class Database extends StatelessWidget {
   String? exportType;
   Database({super.key, this.exportType});
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -40,20 +41,58 @@ class Database extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              ValueListenableBuilder<Box<Quotation>>(
-                  valueListenable: QuotationDB.getQuotations().listenable(),
-                  builder: (context, box, _){
-                    final quotations = box.values.toList().cast<Quotation>();
-                    return buildQuotationList(quotations);
-                  }
-              ),
-              ValueListenableBuilder<Box<User>>(
-                  valueListenable: UserDB.getUsers().listenable(),
-                  builder: (context, box, _){
-                    final users = box.values.toList().cast<User>();
-                    return buildUserList(users);
-                  }
-              ),
+              Column(children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        hintText: 'Search for Quotations',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      onChanged: (value){
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: ValueListenableBuilder<Box<Quotation>>(
+                        valueListenable: QuotationDB.getQuotations().listenable(),
+                        builder: (context, box, _){
+                          final quotations = box.values.toList().cast<Quotation>();
+                          return buildQuotationList(quotations);
+                        }
+                    ),
+                  ),
+                ]),
+              Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                    child: TextField(
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.search),
+                          hintText: 'Search for Customers',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        onChanged: (value){
+                        }
+                    ),
+                  ),
+                  Expanded(
+                    child: ValueListenableBuilder<Box<User>>(
+                        valueListenable: UserDB.getUsers().listenable(),
+                        builder: (context, box, _){
+                          final users = box.values.toList().cast<User>();
+                          return buildUserList(users);
+                        }
+                    ),
+                  ),
+                ],
+                ),
             ],
           ),
         ),
@@ -104,10 +143,6 @@ class Database extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => QuotationForm(formMode: 'duplicate', quotation: quotation)),
                 );
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => QuotationForm(formType: "quotation", formMode: "duplicate", data: widget.filteredQuotationList[index])),
-                // );
               },
             ),
             SlidableAction(

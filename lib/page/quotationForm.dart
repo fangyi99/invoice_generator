@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:invoice_generator/model/quotation.dart';
+import 'package:invoice_generator/page/pdfPreview.dart';
 import 'package:invoice_generator/util/quotationDB.dart';
 import 'package:invoice_generator/widget/form/billingSF.dart';
 import 'package:invoice_generator/widget/form/documentSF.dart';
 import 'package:invoice_generator/widget/form/itemSF.dart';
 import 'package:invoice_generator/widget/form/transport.dart';
+import '../util/pdfTemplate.dart';
 import '../widget/form/tncSF.dart';
 
 class QuotationForm extends StatefulWidget {
@@ -78,33 +80,7 @@ class QuotationFormState extends State<QuotationForm> {
                   ),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed:
-                          // (){
-                        // if(isLastStep){
-                        //   if(widget.formMode == "update"){
-                        //     QuotationDB.updateQuotation(widget.quotation!);
-                        //   }
-                        //   else{
-                        //     //exit to main page
-                        //     if(widget.saved == false){
-                        //       showDialog(context: context, builder: (context) => AlertDialog(
-                        //         title: Text("Leave quotation?"),
-                        //         content: Text("Changes you made so far will not be saved"),
-                        //         actions: [
-                        //           TextButton(onPressed: () => Navigator.pop(context), child: Text("CANCEL")),
-                        //           TextButton(onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst), child: Text("YES"))
-                        //         ],
-                        //       ));
-                        //     }
-                        //     else{
-                        //       Navigator.of(context).popUntil((route) => route.isFirst);
-                        //     }
-                        //   }
-                        // }
-                        // else{
-                          controls.onStepContinue,
-                        // }
-                      // },
+                      onPressed: isLastStep ? previewPDF : controls.onStepContinue,
                       child: (isLastStep)
                           ? const Text('View Preview')
                           : const Text('Next'),
@@ -152,4 +128,27 @@ class QuotationFormState extends State<QuotationForm> {
     ];
     return steps;
   }
+
+  previewPDF() async {
+    final pdfFile;
+    pdfFile = await PDFTemplate.generatePDF(widget.quotation, null);
+
+    //navigate to PDF Preview page
+    if(pdfFile.path != null){
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => PDFPreview(
+              quotation: widget.quotation,
+              invoice: null,
+              filePath: pdfFile.path,
+              fileSubj: widget.quotation!.subjectTitle
+          )
+      ));
+    }
+  }
+    // //prompt error if form is invalid
+    // else{
+    //   Snackbar.createToastMsg(context, 'Form Validation Error.\nPlease correct the errors and try again.', Colors.red[400]);
+    // }
+  // }
+
 }

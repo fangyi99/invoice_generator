@@ -28,7 +28,6 @@ class AddOnSFState extends State<AddOnSF> {
       children: [
         SizedBox(height: 4),
         ListView.builder(
-          key: UniqueKey(),
             itemCount: invoice.addOns.length,
             shrinkWrap: true,
             itemBuilder: (_, i) => AddOnDF(i)
@@ -80,10 +79,10 @@ class AddOnSFState extends State<AddOnSF> {
                     border: OutlineInputBorder(),
                   ),
                   textInputAction: TextInputAction.done,
-                  onChanged: (value){
+                  onChanged: (value) => {
                     setState(() {
                       invoice.addOns[sectionIndex].description = value;
-                    });
+                    })
                   }
               ),
               SizedBox(height: 15),

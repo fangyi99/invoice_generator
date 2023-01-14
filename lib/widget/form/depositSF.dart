@@ -106,11 +106,11 @@ class _DepositFormState extends State<DepositSF> {
             ),
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
-            onChanged: (value) => {
+            onChanged: (value){
               if(value != ''){
                 setState(() {
                   invoice.deposits[sectionIndex].amount = double.parse(double.parse(value).toStringAsFixed(2));
-                })
+                });
               }
             }
         ),

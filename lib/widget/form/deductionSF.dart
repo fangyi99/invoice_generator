@@ -29,7 +29,6 @@ class DeductionSFState extends State<DeductionSF> {
     return Column(
       children: [
         ListView.builder(
-          key: UniqueKey(),
           shrinkWrap: true,
           itemCount: invoice.deductions.length,
           itemBuilder: (_, i) => DeductionDF(i),
@@ -203,12 +202,12 @@ class DeductionSFState extends State<DeductionSF> {
               border: OutlineInputBorder(),
             ),
             textInputAction: TextInputAction.done,
-            onChanged: (value) => {
+            onChanged: (value){
               if(value != ''){
                 setState((){
                   invoice.deductions[sectionIndex].omissions?[itemIndex].amount = double.parse(double.parse(value).toStringAsFixed(2));
-                })
-              },
+                });
+              }
             }
         ),
         SizedBox(height: 5),
