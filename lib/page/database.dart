@@ -8,9 +8,18 @@ import '../util/quotationDB.dart';
 import '../util/userDB.dart';
 import '../model/user.dart';
 
-class Database extends StatelessWidget {
+class Database extends StatefulWidget {
   String? exportType;
+  String userSearchQuery = "";
+  String quotationSearchQuery = "";
+
   Database({super.key, this.exportType});
+
+  @override
+  State<Database> createState() => _DatabaseState();
+}
+
+class _DatabaseState extends State<Database> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -19,7 +28,7 @@ class Database extends StatelessWidget {
     return Scaffold(
       key: _scaffoldKey,
       body: DefaultTabController(
-        initialIndex: exportType == "user" ? 1 : 0,
+        initialIndex: widget.exportType == "user" ? 1 : 0,
         length: 2,
         child: Scaffold(
           appBar: AppBar(
@@ -45,6 +54,7 @@ class Database extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
                     child: TextField(
+                      // controller: widget.quotationSearchQuery,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search),
                         hintText: 'Search for Quotations',
@@ -53,6 +63,9 @@ class Database extends StatelessWidget {
                         ),
                       ),
                       onChanged: (value){
+                        setState(() {
+                          widget.quotationSearchQuery = value;
+                        });
                       },
                     ),
                   ),
@@ -71,6 +84,7 @@ class Database extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
                     child: TextField(
+                        // controller: widget.userSearchQuery,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.search),
                           hintText: 'Search for Customers',
@@ -78,15 +92,18 @@ class Database extends StatelessWidget {
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
-                        onChanged: (value){
-                        }
+                      onChanged: (value){
+                          setState(() {
+                            widget.userSearchQuery = value;
+                          });
+                      },
                     ),
                   ),
                   Expanded(
-                    child: ValueListenableBuilder<Box<User>>(
+                    child: ValueListenableBuilder(
                         valueListenable: UserDB.getUsers().listenable(),
                         builder: (context, box, _){
-                          final users = box.values.toList().cast<User>();
+                          final users = box.values.toList();
                           return buildUserList(users);
                         }
                     ),
@@ -101,24 +118,44 @@ class Database extends StatelessWidget {
   }
 
   Widget buildQuotationList(List<Quotation> quotations) {
-    if (quotations.isEmpty) {
+    final allQuotations = quotations;
+    var filteredQuotations;
+
+    if(widget.quotationSearchQuery!=""){
+      filteredQuotations = allQuotations.where((quotation) => quotation.fileName.toLowerCase().contains(widget.quotationSearchQuery.toLowerCase())).toList();
+    }else{
+      filteredQuotations = allQuotations;
+    }
+
+    if (allQuotations.isEmpty) {
       return const Center(
         child: Text(
           'No quotations yet!',
           style: TextStyle(fontSize: 24),
         ),
       );
-    } else {
+
+    }
+    else if (filteredQuotations.isEmpty) {
+      return const Center(
+        child: Text(
+          'No results found!',
+          style: TextStyle(fontSize: 24),
+        ),
+      );
+    }
+    else {
       return Column(
         children: [
           Expanded(
             child: ListView.builder(
+              key: ValueKey(widget.quotationSearchQuery),
               padding: const EdgeInsets.all(8),
-              itemCount: quotations.length,
+              itemCount: filteredQuotations.length,
               itemBuilder: (BuildContext context, int index) {
-                final transaction = quotations[index];
+                final quotation = filteredQuotations[index];
 
-                return buildQuotationCard(context, index, transaction);
+                return buildQuotationCard(context, index, quotation);
               },
             ),
           ),
@@ -167,7 +204,7 @@ class Database extends StatelessWidget {
         child: ListTile(
           title: Text(quotation.fileName),
           onTap: () => {
-            if(exportType == "quotation"){
+            if(widget.exportType == "quotation"){
               //navigate to invoice form to use quotation
               Navigator.pop(context, quotation)
             }else{
@@ -184,24 +221,43 @@ class Database extends StatelessWidget {
   }
 
   Widget buildUserList(List<User> users) {
-    if (users.isEmpty) {
+    final allUsers = users;
+    var filteredUsers;
+
+    if(widget.userSearchQuery!=""){
+      filteredUsers = allUsers.where((user) => user.name.toLowerCase().contains(widget.userSearchQuery.toLowerCase())).toList();
+    }else{
+      filteredUsers = allUsers;
+    }
+
+    if (allUsers.isEmpty) {
       return const Center(
         child: Text(
           'No users yet!',
           style: TextStyle(fontSize: 24),
         ),
       );
-    } else {
+    }
+    else if(filteredUsers.isEmpty){
+      return const Center(
+        child: Text(
+          'No results found!',
+          style: TextStyle(fontSize: 24),
+        ),
+      );
+    }
+    else {
       return Column(
         children: [
           Expanded(
             child: ListView.builder(
+              key: ValueKey(widget.userSearchQuery),
               padding: const EdgeInsets.all(8),
-              itemCount: users.length,
+              itemCount: filteredUsers.length,
               itemBuilder: (BuildContext context, int index) {
-                final transaction = users[index];
+                final user = filteredUsers[index];
 
-                return buildUserCard(context, index, transaction);
+                return buildUserCard(context, index, user);
               },
             ),
           ),
@@ -240,7 +296,7 @@ class Database extends StatelessWidget {
           title: Text(user.name),
           subtitle: (user.company != '') ? Text(user.company!) : null,
           onTap: () => {
-            if(exportType == "user"){
+            if(widget.exportType == "user"){
               Navigator.pop(context, user)
             }else{
               Navigator.push(
