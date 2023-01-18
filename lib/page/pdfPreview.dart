@@ -12,10 +12,9 @@ class PDFPreview extends StatefulWidget{
 
   final Quotation? quotation;
   final Invoice? invoice;
-  final String? filePath, fileSubj;
-  // final String? quoteRef, formMode, formType;
+  final String? filePath;
 
-  PDFPreview({this.quotation, this.invoice, required this.filePath, required this.fileSubj});
+  PDFPreview({this.quotation, this.invoice, required this.filePath});
 
   @override
   State<PDFPreview> createState() => PDFPreviewState();
@@ -25,22 +24,21 @@ class PDFPreviewState extends State<PDFPreview>{
   int totalPages = 0;
   int currentPage = 0;
   bool pdfReady = false;
-  Quotation? quotation;
-  Invoice? invoice;
+  late dynamic document;
   late bool isQuotation;
   late PDFViewController pdfViewController;
 
   @override
   void initState() {
     super.initState();
-    quotation = widget.quotation;
-    invoice = widget.invoice;
 
     if(widget.quotation != null){
       isQuotation = true;
+      document = widget.quotation;
     }
     else{
       isQuotation = false;
+      document = widget.invoice;
     }
   }
 
@@ -71,18 +69,7 @@ class PDFPreviewState extends State<PDFPreview>{
           IconButton(
               icon: Icon(Icons.send),
               onPressed: () async {
-                // if(defaultTargetPlatform == TargetPlatform.windows){
-                //   print('sharing files on desktop...');
-                //   Share.shareXFiles([XFile(widget.filePath!, name:'testSub.pdf')], subject: widget.fileSubj);
-                // }
-                // else if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS){
-                //   print('sharing files on mobile...');
-                //   Share.shareFiles([widget.filePath!], subject: widget.fileSubj);
-                // }
-                // else{
-                //   print("Sharing of files is not supported on this platform");
-                //   Snackbar.createToastMsg(context, 'Sharing of files is not supported on this platform.', Colors.red[400]);
-                // }
+                Share.shareXFiles([XFile(widget.filePath!, name: '${document.fileName}.pdf')], subject: document.subjectTitle);
               }
           ),
           IconButton(

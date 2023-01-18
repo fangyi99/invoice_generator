@@ -171,7 +171,6 @@ class QuotationFormState extends State<QuotationForm> {
                 quotation: widget.quotation,
                 invoice: null,
                 filePath: pdfFile.path,
-                fileSubj: widget.quotation!.subjectTitle
             )
         ));
       }

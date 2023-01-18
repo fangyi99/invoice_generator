@@ -165,7 +165,6 @@ class InvoiceFormState extends State<InvoiceForm> {
                     quotation: null,
                     invoice: widget.invoice,
                     filePath: pdfFile.path,
-                    fileSubj: widget.invoice!.subjectTitle
                 )
         ));
       }
