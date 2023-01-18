@@ -135,6 +135,11 @@ class _BillingSFState extends State<BillingSF> {
               isQuotation ? (quotation!.user.address1 = value) : (invoice!.user.address1 = value);
             });
           },
+          validator: (value) {
+            if(value == null || value.isEmpty)
+              return 'This field is required.';
+            return null;
+          },
         ),
         SizedBox(height: 15),
         TextFormField(
@@ -149,6 +154,11 @@ class _BillingSFState extends State<BillingSF> {
             setState(() {
               isQuotation ? (quotation!.user.address2 = value) : (invoice!.user.address2 = value);
             });
+          },
+          validator: (value) {
+            if(value == null || value.isEmpty)
+              return 'This field is required.';
+            return null;
           },
         ),
         SizedBox(height: 15),

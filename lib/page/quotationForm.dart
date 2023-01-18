@@ -24,6 +24,7 @@ class QuotationForm extends StatefulWidget {
 
 class QuotationFormState extends State<QuotationForm> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<GlobalKey<FormState>> _formKeys = [GlobalKey<FormState>(), GlobalKey<FormState>()];
   int currentStep = 0;
 
   @override
@@ -60,12 +61,14 @@ class QuotationFormState extends State<QuotationForm> {
             steps: formSteps(),
             currentStep: currentStep,
             onStepTapped: (step){
-              setState((){
-                currentStep = step;
-              });
+              if((currentStep == 0 || currentStep == 1) ? _formKeys[currentStep].currentState!.validate() : true){
+                setState((){
+                  currentStep = step;
+                });
+              }
             },
             onStepContinue: (){
-              if(currentStep < formSteps().length){
+              if(currentStep < formSteps().length && ((currentStep == 0 || currentStep == 1) ? _formKeys[currentStep].currentState!.validate() : true)){
                 setState(() {
                   currentStep = currentStep + 1;
                 });
@@ -117,15 +120,23 @@ class QuotationFormState extends State<QuotationForm> {
     List<Step> steps = [
       Step(
         title: const SizedBox.shrink(),
-        content: DocumentSF(
-            mode: widget.formMode,
-            quotation: widget.quotation
+        content: Form(
+          key: _formKeys[0],
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: DocumentSF(
+              mode: widget.formMode,
+              quotation: widget.quotation
+          ),
         ),
         isActive: currentStep >= 0,
       ),
       Step(
         title: const SizedBox.shrink(),
-        content: BillingSF(quotation: widget.quotation),
+        content: Form(
+            key: _formKeys[1],
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: BillingSF(quotation: widget.quotation)
+        ),
         isActive: currentStep >= 1,
       ),
       Step(
@@ -148,26 +159,27 @@ class QuotationFormState extends State<QuotationForm> {
   }
 
   previewPDF() async {
-    final pdfFile;
-    pdfFile = await PDFTemplate.generatePDF(widget.quotation, null);
 
-    //navigate to PDF Preview page
-    if(pdfFile.path != null){
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => PDFPreview(
-              quotation: widget.quotation,
-              invoice: null,
-              filePath: pdfFile.path,
-              fileSubj: widget.quotation!.subjectTitle
-          )
-      ));
+    if(_formKeys.every((key) => key.currentState!.validate())){
+      final pdfFile;
+      pdfFile = await PDFTemplate.generatePDF(widget.quotation, null);
+
+      //navigate to PDF Preview page
+      if(pdfFile.path != null){
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => PDFPreview(
+                quotation: widget.quotation,
+                invoice: null,
+                filePath: pdfFile.path,
+                fileSubj: widget.quotation!.subjectTitle
+            )
+        ));
+      }
+    }
+    //prompt error if form is invalid
+    else{
+      Popup.createToastMsg(context, 'Form Validation Error.\nPlease correct the marked fields in order to continue.', Colors.red[400]);
     }
   }
-
-    // //prompt error if form is invalid
-    // else{
-    //   Snackbar.createToastMsg(context, 'Form Validation Error.\nPlease correct the errors and try again.', Colors.red[400]);
-    // }
-  // }
 
 }

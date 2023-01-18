@@ -24,6 +24,7 @@ class InvoiceForm extends StatefulWidget {
 
 class InvoiceFormState extends State<InvoiceForm> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<GlobalKey<FormState>> _formKeys = [GlobalKey<FormState>(), GlobalKey<FormState>()];
   int currentStep = 0;
 
   @override
@@ -44,12 +45,14 @@ class InvoiceFormState extends State<InvoiceForm> {
           steps: formSteps(),
           currentStep: currentStep,
           onStepTapped: (step){
-            setState((){
-              currentStep = step;
-            });
+            if((currentStep == 0 || currentStep == 1) ? _formKeys[currentStep].currentState!.validate() : true){
+              setState((){
+                currentStep = step;
+              });
+            }
           },
           onStepContinue: (){
-            if(currentStep < formSteps().length){
+            if(currentStep < formSteps().length && ((currentStep == 0 || currentStep == 1) ? _formKeys[currentStep].currentState!.validate() : true)){
               setState(() {
                 currentStep = currentStep + 1;
               });
@@ -101,15 +104,23 @@ class InvoiceFormState extends State<InvoiceForm> {
     List<Step> steps = [
       Step(
         title: const SizedBox.shrink(),
-        content: DocumentSF(
-            mode: widget.formMode,
-            invoice: widget.invoice
+        content: Form(
+          key: _formKeys[0],
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: DocumentSF(
+              mode: widget.formMode,
+              invoice: widget.invoice
+          ),
         ),
         isActive: currentStep >= 0,
       ),
       Step(
         title: const SizedBox.shrink(),
-        content: BillingSF(invoice: widget.invoice),
+        content: Form(
+            key: _formKeys[1],
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: BillingSF(invoice: widget.invoice)
+        ),
         isActive: currentStep >= 1,
       ),
       Step(
@@ -142,19 +153,26 @@ class InvoiceFormState extends State<InvoiceForm> {
   }
 
   previewPDF() async {
-    final pdfFile;
-    pdfFile = await PDFTemplate.generatePDF(null, widget.invoice);
+    if (_formKeys.every((key) => key.currentState!.validate())) {
+      final pdfFile;
+      pdfFile = await PDFTemplate.generatePDF(null, widget.invoice);
 
-    //navigate to PDF Preview page
-    if(pdfFile.path != null){
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => PDFPreview(
-              quotation: null,
-              invoice: widget.invoice,
-              filePath: pdfFile.path,
-              fileSubj: widget.invoice!.subjectTitle
-          )
-      ));
+      //navigate to PDF Preview page
+      if (pdfFile.path != null) {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) =>
+                PDFPreview(
+                    quotation: null,
+                    invoice: widget.invoice,
+                    filePath: pdfFile.path,
+                    fileSubj: widget.invoice!.subjectTitle
+                )
+        ));
+      }
+    }
+    //prompt error if form is invalid
+    else{
+      Popup.createToastMsg(context, 'Form Validation Error.\nPlease correct the marked fields in order to continue.', Colors.red[400]);
     }
   }
 }
