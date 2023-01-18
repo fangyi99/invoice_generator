@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:invoice_generator/util/userDB.dart';
 import '../model/user.dart';
 
@@ -301,7 +300,7 @@ class UserFormState extends State<UserForm> {
                             email: emailController.text
                         );
 
-                        (widget.user != null) ? UserDB.updateUser(user) : UserDB.createUser(user);
+                        (widget.user != null) ? UserDB.updateUser(context, widget.user!, user) : UserDB.createUser(context, user);
                       }
                     },
                     child: const Text('Save'),

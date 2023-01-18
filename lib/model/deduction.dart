@@ -5,7 +5,7 @@ class Deduction{
   double? amount;
   List<Omission>? omissions;
 
-  Deduction({this.type = "Discount Given", this.amount = 0.00, this.omissions});
+  Deduction({this.type = "Discount Given", this.amount = 0, this.omissions});
 
   Map<String, dynamic> toJSON() {
     return {

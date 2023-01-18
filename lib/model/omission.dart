@@ -2,7 +2,7 @@ class Omission{
   String description;
   double amount;
 
-  Omission({this.description = "", this.amount = 0.00});
+  Omission({this.description = "", this.amount = 0});
 
   @override
   Map<String, dynamic> toJSON() {

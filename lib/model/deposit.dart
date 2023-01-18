@@ -3,7 +3,7 @@ class Deposit{
   double? amount, progressCounter;
   DateTime? date;
 
-  Deposit({this.type = "Down Payment", this.progressCounter = 1.0, this.amount = 0.0,
+  Deposit({this.type = "Down Payment", this.progressCounter = 1.0, this.amount = 0,
     this.date = null, this.method = "Cash", this.chequeNo = "", this.bankName = ""});
 
   Map<String, dynamic> toJSON() {

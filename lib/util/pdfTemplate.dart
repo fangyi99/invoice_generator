@@ -353,23 +353,11 @@ class PDFTemplate{
       if(itemSection.type == 'Default'){
         for(int j=0; j<itemSection.itemList.length; j++){
           var item = itemSection.itemList[j];
-          // if((isQuotation && mode != null) || !isQuotation){
-          if(isQuotation || !isQuotation){
-            if(item.methodStm != null && item.methodStm != ''){
-              data.add([itemCounter, item.description + "\n- " + item.methodStm.replaceAll("\n", "\n- "), '\$${valueItl.format(item.amount)}']);
-            }
-            else{
-              data.add([itemCounter, item.description, '\$${valueItl.format(item.amount)}']);
-            }
+          if(item.methodStm != null && item.methodStm != ''){
+            data.add([itemCounter, item.description + "\n- " + item.methodStm.replaceAll("\n", "\n- "), '\$${valueItl.format(item.amount)}']);
           }
           else{
-            if(item.methodStm != null && item.methodStm != ''){
-              data.add([itemCounter, item.description + item.methodStm.replaceAll("\n", "\n- "), '\$${valueItl.format(item.amount)}']);
-            }
-            else{
-              data.add([itemCounter, item.description, '\$${valueItl.format(item.amount)}']);
-            }
-
+            data.add([itemCounter, item.description, '\$${valueItl.format(item.amount)}']);
           }
           calculationList.add(item.amount);
           itemCounter++;
@@ -377,10 +365,20 @@ class PDFTemplate{
       }
       else{
         var locationBasedList = [];
-        data.add(['', itemSection.locationType.toUpperCase(), '']);
+        data.add(['', itemSection.type.toUpperCase(), '']);
         for(int j=0; j<itemSection.itemList.length; j++){
           var item = itemSection.itemList[j];
-          data.add([itemCounter, item.description + item.methodStm.replaceAll("/n", "\n- "), '\$${valueItl.format(item.amount)}']);
+          if(item.methodStm != null && item.methodStm != '') {
+            data.add([
+              itemCounter,
+              item.description + "\n- " +
+                  item.methodStm.replaceAll("\n", "\n- "),
+              '\$${valueItl.format(item.amount)}'
+            ]);
+          }
+          else{
+            data.add([itemCounter, item.description, '\$${valueItl.format(item.amount)}']);
+          }
           locationBasedList.add(item.amount);
           calculationList.add(item.amount);
           itemCounter++;
@@ -477,7 +475,7 @@ class PDFTemplate{
 
     //add downpayment costs
     document.deposits.forEach((item) => {
-      if(item.amount != 0 && item.date.isNotEmpty){
+      if(item.amount != 0 && item.date.toString().isNotEmpty){
         if(firstDeduction){
           if(total - item.amount == 0){
             data.add([
@@ -573,9 +571,9 @@ class PDFTemplate{
       pw.Text('Terms & Conditions: -', style: TextStyle(fontStyle: FontStyle.italic, fontSize: fontSize)),
       pw.Text('a)   35% Down Payment upon confirmation of quotation.', style: pw.TextStyle(fontSize: fontSize)),
       pw.Text('b)   ${document.tnC.balancePmt == 'Progress Claims' ?
-      'Balance Payment: ${document.tnC.balancePmt} every ${document.tnC.progressPmt}.'
+      'Balance Payment: ${document.tnC.balancePmt} every ${document.tnC.progressPmt.toString().toLowerCase()}.'
           : 'Balance payment upon completion of work done.'}', style: TextStyle(fontSize: fontSize)),
-      pw.Text('c)   Validity Period of this quotation is ${document.tnC.progressPmt}.', style: TextStyle(fontSize: fontSize)),
+      pw.Text('c)   Validity Period of this quotation is ${document.tnC.validityPrd}.', style: TextStyle(fontSize: fontSize)),
       pw.Text('d)   Holding cost of \$100/mth will be charged after completion of work done.', style: TextStyle(fontStyle: FontStyle.italic, fontSize: fontSize)),
       pw.SizedBox(height: 10),
     ],

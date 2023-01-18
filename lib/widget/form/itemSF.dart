@@ -228,11 +228,8 @@ class _ItemSFState extends State<ItemSF> {
           textInputAction: TextInputAction.newline,
           onChanged: (value) => {
             if(value != ''){
-              item.methodStm = "/n$value"
+              item.methodStm = "$value"
             },
-          },
-          onEditingComplete: (){
-            item.methodStm = item.methodStm.replaceAll(RegExp(r'(\n)'), '/n');
           },
           keyboardType: TextInputType.multiline,
           maxLines: null,

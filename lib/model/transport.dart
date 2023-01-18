@@ -4,7 +4,7 @@ part 'transport.g.dart';
 @HiveType(typeId: 4)
 class Transport extends HiveObject{
 
-  Transport({this.type = "Two Way", this.amount = 0.00, this.otherType = ""});
+  Transport({this.type = "Two Way", this.amount = 0, this.otherType = ""});
 
   @HiveField(0)
   late String type;

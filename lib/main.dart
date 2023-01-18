@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:invoice_generator/model/tnC.dart';
 import 'package:invoice_generator/model/item.dart';
@@ -23,6 +24,7 @@ import 'model/quotation.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   // initialize hive
   await Hive.initFlutter();
 

@@ -1,16 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:invoice_generator/page/pdfPreview.dart';
 import 'package:invoice_generator/widget/form/billingSF.dart';
 import 'package:invoice_generator/widget/form/documentSF.dart';
 import 'package:invoice_generator/widget/form/itemSF.dart';
 import 'package:invoice_generator/widget/form/transport.dart';
 import '../model/invoice.dart';
+import '../util/pdfTemplate.dart';
 import '../widget/form/addOnSF.dart';
 import '../widget/form/deductionSF.dart';
 import '../widget/form/depositSF.dart';
+import '../widget/popup.dart';
 
 class InvoiceForm extends StatefulWidget {
-
+  
   String formMode;
   Invoice invoice;
   InvoiceForm({super.key, required this.invoice, required this.formMode});
@@ -26,67 +29,69 @@ class InvoiceFormState extends State<InvoiceForm> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text("Invoice Form"),
-      ),
-      body: Stepper(
-        type: StepperType.horizontal,
-        steps: formSteps(),
-        currentStep: currentStep,
-        onStepTapped: (step){
-          setState((){
-            currentStep = step;
-          });
-        },
-        onStepContinue: (){
-          if(currentStep == formSteps().length - 1){
-            print(widget.invoice.toJSON());
-          }else{
+    return WillPopScope(
+      onWillPop: () async {
+        final shouldPop = await Popup.exitDialog(context);
+        return shouldPop ?? false;
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: const Text("Invoice Form"),
+        ),
+        body: Stepper(
+          type: StepperType.horizontal,
+          steps: formSteps(),
+          currentStep: currentStep,
+          onStepTapped: (step){
+            setState((){
+              currentStep = step;
+            });
+          },
+          onStepContinue: (){
             if(currentStep < formSteps().length){
               setState(() {
                 currentStep = currentStep + 1;
               });
             }
-          }
-        },
-        onStepCancel: (){
-          setState(() {
-            if(currentStep > 0){
-              currentStep = currentStep - 1;
-            }else{
-              currentStep = 0;
-            }
-          });
-        },
-        controlsBuilder: (context, controls) {
-          final isLastStep = currentStep == formSteps().length - 1;
-          return Container(
-            margin: const EdgeInsetsDirectional.symmetric(horizontal: 0, vertical: 15),
-            child: Row(
-              children: [if (currentStep > 0)
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: controls.onStepCancel,
-                    child: const Text('Back'),
+          },
+          onStepCancel: (){
+            setState(() {
+              if(currentStep > 0){
+                currentStep = currentStep - 1;
+              }else{
+                currentStep = 0;
+              }
+            });
+          },
+          controlsBuilder: (context, controls) {
+            final isLastStep = currentStep == formSteps().length - 1;
+            return Container(
+              margin: const EdgeInsetsDirectional.symmetric(horizontal: 0, vertical: 15),
+              child: Row(
+                children: [if (currentStep > 0)
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: controls.onStepCancel,
+                      child: const Text('Back'),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: isLastStep ? previewPDF : controls.onStepContinue,
-                    child: (isLastStep)
-                        ? const Text('Submit')
-                        : const Text('Next'),
+                  const SizedBox(
+                    width: 10,
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: isLastStep ? previewPDF : controls.onStepContinue,
+                      child: (isLastStep)
+                          ? const Text('View Preview')
+                          : const Text('Next'),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -136,10 +141,20 @@ class InvoiceFormState extends State<InvoiceForm> {
     return steps;
   }
 
-  previewPDF(){
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(builder: (context) => PDFView())
-    // );
+  previewPDF() async {
+    final pdfFile;
+    pdfFile = await PDFTemplate.generatePDF(null, widget.invoice);
+
+    //navigate to PDF Preview page
+    if(pdfFile.path != null){
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => PDFPreview(
+              quotation: null,
+              invoice: widget.invoice,
+              filePath: pdfFile.path,
+              fileSubj: widget.invoice!.subjectTitle
+          )
+      ));
+    }
   }
 }

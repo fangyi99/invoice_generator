@@ -7,6 +7,7 @@ import '../model/quotation.dart';
 import '../util/quotationDB.dart';
 import '../util/userDB.dart';
 import '../model/user.dart';
+import '../widget/popup.dart';
 
 class Database extends StatefulWidget {
   String? exportType;
@@ -196,7 +197,7 @@ class _DatabaseState extends State<Database> {
               backgroundColor: Colors.red,
               icon: Icons.delete,
               onPressed: (context) {
-                QuotationDB.deleteQuotation(context, quotation);
+                QuotationDB.deleteQuotation(_scaffoldKey.currentContext!, "db", quotation);
               },
             )
           ],
@@ -225,7 +226,11 @@ class _DatabaseState extends State<Database> {
     var filteredUsers;
 
     if(widget.userSearchQuery!=""){
-      filteredUsers = allUsers.where((user) => user.name.toLowerCase().contains(widget.userSearchQuery.toLowerCase())).toList();
+      filteredUsers = allUsers.where((user) =>
+        user.name.toLowerCase().contains(widget.userSearchQuery.toLowerCase()) ||
+        user.company!.toLowerCase().contains(widget.userSearchQuery.toLowerCase()))
+      .toList();
+
     }else{
       filteredUsers = allUsers;
     }
@@ -287,7 +292,7 @@ class _DatabaseState extends State<Database> {
               label: 'Delete',
               icon: Icons.delete,
               onPressed: (context) {
-                UserDB.deleteUser(context, user);
+                UserDB.deleteUser(_scaffoldKey.currentContext!, user);
               },
             )
           ],
@@ -317,5 +322,12 @@ class _DatabaseState extends State<Database> {
       context,
       MaterialPageRoute(builder: (context) => UserForm(formMode: 'edit', user: user)),
     );
+
+    if(!mounted) return;
+
+    // After the Selection Screen returns a result, hide any previous snackbar and show the new result.
+    if(result!=null){
+      Popup.displayReturnedMsg(_scaffoldKey.currentContext!, result["msg"], result["bgColor"]);
+    }
   }
 }

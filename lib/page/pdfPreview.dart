@@ -1,23 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:invoice_generator/page/quotationForm.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../model/invoice.dart';
 import '../model/quotation.dart';
+import '../widget/popup.dart';
 
 class PDFPreview extends StatefulWidget{
 
-  static final String pageName = "pdfView";
   final Quotation? quotation;
   final Invoice? invoice;
   final String? filePath, fileSubj;
   // final String? quoteRef, formMode, formType;
-  bool saved = false;
 
   PDFPreview({this.quotation, this.invoice, required this.filePath, required this.fileSubj});
-
-  // PDFViewPage({this.quoteRef, this.formMode, this.formType, this.tempQuotation, this.filePath, this.fileSubj});
 
   @override
   State<PDFPreview> createState() => PDFPreviewState();
@@ -33,6 +31,20 @@ class PDFPreviewState extends State<PDFPreview>{
   late PDFViewController pdfViewController;
 
   @override
+  void initState() {
+    super.initState();
+    quotation = widget.quotation;
+    invoice = widget.invoice;
+
+    if(widget.quotation != null){
+      isQuotation = true;
+    }
+    else{
+      isQuotation = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
@@ -42,20 +54,17 @@ class PDFPreviewState extends State<PDFPreview>{
             visible: isQuotation,
             child: IconButton(
                 icon: Icon(Icons.save),
+                color: QuotationForm.saved ? Colors.white38 : Colors.white,
                 onPressed: (){
-                  // if(widget.saved == true){
-                  //   Snackbar.createToastMsg(context, 'Quotation is up to date', Colors.lightGreen[600]);
-                  // }
-                  // else{
-                  //   if(widget.formMode == "update"){
-                  //     updateQuotation();
-                  //   }else{
-                  //     saveQuotation();
-                  //   }
-                  //   setState(() {
-                  //     widget.saved = true;
-                  //   });
-                  // }
+                  if(QuotationForm.saved == true){
+                    Popup.createToastMsg(context, 'Quotation is up to date', Colors.lightGreen[600]);
+                  }
+                  else{
+                    setState(() {
+                      QuotationForm.saved = true;
+                    });
+                    Popup.createToastMsg(context, 'Quotation saved', Colors.lightGreen[600]);
+                  }
                 }
             ),
           ),
@@ -79,7 +88,7 @@ class PDFPreviewState extends State<PDFPreview>{
           IconButton(
               icon: Icon(Icons.home_filled),
               onPressed: (){
-                if(widget.saved == false){
+                if(QuotationForm.saved == false){
                   showDialog(context: context, builder: (context) => AlertDialog(
                     title: Text("Leave quotation?"),
                     content: Text("Changes you made so far will not be saved"),

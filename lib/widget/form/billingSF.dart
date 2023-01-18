@@ -19,9 +19,9 @@ class BillingSF extends StatefulWidget {
   static TextEditingController addressL2Controller = TextEditingController();
   static TextEditingController addressL3Controller = TextEditingController();
   static TextEditingController postalCodeController = TextEditingController();
-  static TextEditingController hdphCCController = TextEditingController();
+  static TextEditingController hdphCCController = TextEditingController(text: "65");
   static TextEditingController hdphController = TextEditingController();
-  static TextEditingController officeCCController = TextEditingController();
+  static TextEditingController officeCCController = TextEditingController(text: "65");
   static TextEditingController officeController = TextEditingController();
   static TextEditingController emailController = TextEditingController();
 
