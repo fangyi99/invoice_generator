@@ -1,10 +1,9 @@
 import 'package:invoice_generator/model/transport.dart';
 import 'package:invoice_generator/model/user.dart';
-
 import 'tnC.dart';
 import 'itemSection.dart';
-
 import 'package:hive/hive.dart';
+
 part 'quotation.g.dart';
 
 @HiveType(typeId: 0)

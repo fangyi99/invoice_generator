@@ -63,7 +63,6 @@ class _BillingSFState extends State<BillingSF> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -103,6 +102,7 @@ class _BillingSFState extends State<BillingSF> {
         TextFormField(
           controller: BillingSF.nameController,
           decoration: InputDecoration(
+            helperText: "Please include addressee's salutation",
             labelText: 'Addressee / Attn *',
             hintText: 'Ms Emma',
             border: OutlineInputBorder(),

@@ -77,28 +77,25 @@ class _ItemSFState extends State<ItemSF> {
           itemBuilder: (_, i) => ItemSectionDF(i),
         ),
         const SizedBox(height: 10),
-        Visibility(
-          visible: isQuotation ? (!((quotation!.itemSections.map((e) => e.type)).contains("Default")) && quotation!.itemSections.length < 2) : (!((invoice!.itemSections.map((e) => e.type)).contains("Default")) && invoice!.itemSections.length < 2),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 15.0),
-                    child: ElevatedButton(
-                      onPressed: (){
-                        setState((){
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 15.0),
+                  child: ElevatedButton(
+                    onPressed: (){
+                      setState((){
                           isQuotation ? quotation!.itemSections.add(ItemSection(type: "Default", itemList: [Item()])) : invoice!.itemSections.add(ItemSection(type: "Default", itemList: [Item()]));
                         });
-                      },
-                      child: const Text('+ Add Option'),
-                    ),
+                    },
+                    child: const Text('+ Add Option'),
                   ),
                 ),
-              )
-          ),
+              ),
+            )
         ),
       ],
     );

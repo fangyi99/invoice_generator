@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:invoice_generator/model/quotation.dart';
-
 import '../widget/popup.dart';
 
 class QuotationDB{

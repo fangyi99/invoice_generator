@@ -58,6 +58,7 @@ class PDFPreviewState extends State<PDFPreview>{
                     Popup.createToastMsg(context, 'Quotation is up to date', Colors.lightGreen[600]);
                   }
                   else{
+                    widget.quotation!.save();
                     setState(() {
                       QuotationForm.saved = true;
                     });

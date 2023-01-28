@@ -55,7 +55,6 @@ class _DatabaseState extends State<Database> {
                   Container(
                     margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
                     child: TextField(
-                      // controller: widget.quotationSearchQuery,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search),
                         hintText: 'Search for Quotations',
@@ -74,7 +73,7 @@ class _DatabaseState extends State<Database> {
                     child: ValueListenableBuilder<Box<Quotation>>(
                         valueListenable: QuotationDB.getQuotations().listenable(),
                         builder: (context, box, _){
-                          final quotations = box.values.toList().cast<Quotation>();
+                          final quotations = box.values.toList();
                           return buildQuotationList(quotations);
                         }
                     ),
@@ -85,7 +84,6 @@ class _DatabaseState extends State<Database> {
                   Container(
                     margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
                     child: TextField(
-                        // controller: widget.userSearchQuery,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.search),
                           hintText: 'Search for Customers',

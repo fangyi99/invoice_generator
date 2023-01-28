@@ -17,7 +17,7 @@ class TransportSF extends StatefulWidget {
 }
 
 class _TransportSFState extends State<TransportSF> {
-  List<String> transportList = ['One Way', 'Two Way', 'Self Collect', 'Others'];
+  List<String> transportList = ['One Way', 'Two Way', 'Self Collect', 'Others', 'None'];
   Quotation? quotation;
   Invoice? invoice;
   late bool isQuotation;
@@ -82,6 +82,11 @@ class _TransportSFState extends State<TransportSF> {
                     }
                 )
             ),
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            //radio btns
             Expanded(
                 child: RadioGroup(
                     display: transportList[3],
@@ -94,8 +99,23 @@ class _TransportSFState extends State<TransportSF> {
                     }
                 )
             ),
+            Expanded(
+                child: RadioGroup(
+                    display: transportList[4],
+                    radioIndex: 4,
+                    selectedIndex: selectedIndex,
+                    onChange: (){
+                      setState((){
+                        isQuotation ? (quotation!.transport.type = transportList[4]) : (invoice!.transport.type = transportList[4]);
+                        isQuotation ? (quotation!.transport.amount = 0) : (invoice!.transport.amount = 0);
+                        TransportSF.amountController.text = "0";
+                      });
+                    }
+                )
+            ),
           ],
         ),
+        SizedBox(height: 15),
         Visibility(
           visible: selectedIndex == 3,
           child: Padding(
@@ -117,7 +137,7 @@ class _TransportSFState extends State<TransportSF> {
         SizedBox(height: 15),
         TextFormField(
           controller: TransportSF.amountController,
-          enabled: selectedIndex == 2 ? false : true,
+          enabled: (selectedIndex == 2 || selectedIndex == 4) ? false : true,
           decoration: InputDecoration(
             prefixIcon: Padding(
               padding: EdgeInsets.all(10),
@@ -154,6 +174,8 @@ class _TransportSFState extends State<TransportSF> {
         return 2;
       case "Others":
         return 3;
+      case "None":
+        return 4;
       default:
         return 3;
     }

@@ -293,7 +293,7 @@ class PDFTemplate{
     var dollars = totalToWords[0];
     var cents = totalToWords[1];
     if(dollars != '0') {
-      if (cents != '0') {
+      if (cents != '00') {
         total = '${NumberToWord().convert(
             'en-in', int.parse(dollars))}and cents ${NumberToWord().convert(
             'en-in', int.parse(cents))}only';
@@ -365,7 +365,17 @@ class PDFTemplate{
       }
       else{
         var locationBasedList = [];
-        data.add(['', itemSection.type.toUpperCase(), '']);
+        //adding item section headers
+        if(itemSection.type == 'Internal'){
+          data.add(['', 'Painting to Internal Surfaces', '']);
+        }
+        else if(itemSection.type == 'External'){
+          data.add(['', 'Painting to External Surfaces', '']);
+        }
+        else{
+          data.add(['', 'Painting to Furniture', '']);
+        }
+        //adding item description, mthd stm & amount
         for(int j=0; j<itemSection.itemList.length; j++){
           var item = itemSection.itemList[j];
           if(item.methodStm != null && item.methodStm != '') {
@@ -389,9 +399,13 @@ class PDFTemplate{
     };
 
     //add transport cost
-    data.add([itemCounter, document.transport.type, '\$${valueItl.format(document.transport.amount)}']);
-    itemCounter++;
-    calculationList.add(document.transport.amount);
+    if(document.transport.type != 'None'){
+      data.add([itemCounter, document.transport.type, '\$${valueItl.format(document.transport.amount)}']);
+      itemCounter++;
+      calculationList.add(document.transport.amount);
+    }
+
+
 
     //calculate item cost
     var totalContractPrice = calculateContractPrice(calculationList);
@@ -574,7 +588,8 @@ class PDFTemplate{
       'Balance Payment: ${document.tnC.balancePmt} every ${document.tnC.progressPmt.toString().toLowerCase()}.'
           : 'Balance payment upon completion of work done.'}', style: TextStyle(fontSize: fontSize)),
       pw.Text('c)   Validity Period of this quotation is ${document.tnC.validityPrd}.', style: TextStyle(fontSize: fontSize)),
-      pw.Text('d)   Holding cost of \$100/mth will be charged after completion of work done.', style: TextStyle(fontStyle: FontStyle.italic, fontSize: fontSize)),
+      if((document.itemSections.map((e) => e.type)).contains("Default"))
+        pw.Text('d)   Holding cost of \$100/mth will be charged after completion of work done.', style: TextStyle(fontStyle: FontStyle.italic, fontSize: fontSize)),
       pw.SizedBox(height: 10),
     ],
   );
@@ -625,7 +640,7 @@ class PDFTemplate{
       ]
   );
 
-  static pw.Widget buildFooter(type, fontSize) => pw.Column(
+  static pw.Widget buildFooter(isQuotation, fontSize) => pw.Column(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
       pw.Text('Bank Details'.toUpperCase(), style: pw.TextStyle(decoration: pw.TextDecoration.underline, fontSize: fontSize)),
@@ -677,7 +692,7 @@ class PDFTemplate{
         ),
       ),
       pw.SizedBox(height: 20),
-      if(type == 'invoice')
+      if(!isQuotation)
         pw.Text('This is computer generated invoice no signature required.', style: pw.TextStyle(fontSize: fontSize)),
       pw.SizedBox(height: 20),
     ],

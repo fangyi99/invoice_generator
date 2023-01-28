@@ -30,6 +30,18 @@ class QuotationFormState extends State<QuotationForm> {
   @override
   initState(){
     if(widget.formMode == "create"){
+      //clear inputs
+      BillingSF.companyController.clear();
+      BillingSF.nameController.clear();
+      BillingSF.addressL1Controller.clear();
+      BillingSF.addressL2Controller.clear();
+      BillingSF.addressL3Controller.clear();
+      BillingSF.postalCodeController.clear();
+      BillingSF.hdphCCController.clear();
+      BillingSF.hdphController.clear();
+      BillingSF.officeCCController.clear();
+      BillingSF.officeController.clear();
+      BillingSF.emailController.clear();
       QuotationForm.saved = false;
     }else{
       QuotationForm.saved = true;

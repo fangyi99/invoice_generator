@@ -28,19 +28,19 @@ void main() async{
   // initialize hive
   await Hive.initFlutter();
 
-  Hive.registerAdapter(QuotationAdapter());
   Hive.registerAdapter(UserAdapter());
-  Hive.registerAdapter(ItemSectionAdapter());
   Hive.registerAdapter(ItemAdapter());
+  Hive.registerAdapter(ItemSectionAdapter());
   Hive.registerAdapter(TransportAdapter());
   Hive.registerAdapter(TnCAdapter());
+  Hive.registerAdapter(QuotationAdapter());
 
-  await Hive.openBox<Quotation>('quotations');
   await Hive.openBox<User>('users');
-  await Hive.openBox<Quotation>('itemSections');
   await Hive.openBox<Quotation>('items');
+  await Hive.openBox<Quotation>('itemSections');
   await Hive.openBox<Quotation>('transports');
   await Hive.openBox<Quotation>('tnCs');
+  await Hive.openBox<Quotation>('quotations');
 
   runApp(
       const MaterialApp(

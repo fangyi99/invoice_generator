@@ -8,6 +8,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../model/invoice.dart';
 import '../../model/quotation.dart';
 import '../../page/database.dart';
+import '../../util/quotationDB.dart';
 
 class DocumentSF extends StatefulWidget {
 
@@ -90,15 +91,7 @@ class _DocumentSFState extends State<DocumentSF> {
         TextFormField(
           controller: fileNameController,
           maxLines: null,
-          // readOnly: fileNameEnabled,
           decoration: InputDecoration(
-            // suffixIcon: IconButton(
-            //   color: fileNameEnabled ? Colors.cyan : Colors.grey,
-            //     icon: Icon(Icons.remove_circle),
-            //     onPressed: () {
-            //       fileNameEnabled = !fileNameEnabled;
-            //     }
-            // ),
             labelText: 'PDF File Name *',
             border: OutlineInputBorder(),
             errorMaxLines: 3,
@@ -116,8 +109,11 @@ class _DocumentSFState extends State<DocumentSF> {
             if(value == null || value.isEmpty) {
               return 'This field is required.';
             }
-            if(value.contains(RegExp('[\\/:*?<>|]'))) {
+            else if(value.contains(RegExp('[\\/:*?<>|]'))) {
               return "A file name can't contain any of the following characters: \ / : * ? < > |";
+            }
+            else if(isQuotation && QuotationDB.getQuotations().values.toList().where((quote) => quote.fileName == quotation?.fileName).length > 1){
+              return "This file name is already used";
             }
             return null;
           },
@@ -129,6 +125,8 @@ class _DocumentSFState extends State<DocumentSF> {
           decoration: InputDecoration(
             labelText: isQuotation ?  'Quotation No. *' : 'Invoice No. *',
             hintText: isQuotation ? 'RD/####Q/YY' : 'RD/####/YY',
+            helperText: "Please enter document's running no. and year in the format \"####/YY\"",
+            helperMaxLines: 5,
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
@@ -142,8 +140,13 @@ class _DocumentSFState extends State<DocumentSF> {
             }
           },
           validator: (value) {
-            if(value == null || value.isEmpty)
+            if(value == null || value.isEmpty){
               return 'This field is required.';
+            }
+            else if(isQuotation && QuotationDB.getQuotations().values.toList().where((quote) => quote.documentID == quotation?.documentID).length > 1){
+              return 'This document id already exist in the DB. Please use or delete the existing version before you can contiue.';
+            }
+
             return null;
           },
         ),
