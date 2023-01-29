@@ -348,55 +348,17 @@ class PDFTemplate{
     var itemCounter = 1;
 
     //add item costs
-    for(int i=0; i<document.itemSections.length; i++){
-      var itemSection = document.itemSections[i];
-      if(itemSection.type == 'Default'){
-        for(int j=0; j<itemSection.itemList.length; j++){
-          var item = itemSection.itemList[j];
-          if(item.methodStm != null && item.methodStm != ''){
-            data.add([itemCounter, item.description + "\n- " + item.methodStm.replaceAll("\n", "\n- "), '\$${valueItl.format(item.amount)}']);
-          }
-          else{
-            data.add([itemCounter, item.description, '\$${valueItl.format(item.amount)}']);
-          }
-          calculationList.add(item.amount);
-          itemCounter++;
-        }
+    for(int i=0; i<document.itemList.length; i++){
+      var item = document.itemList[i];
+      if(item.methodStm != null && item.methodStm != ''){
+        data.add([itemCounter, item.description + "\n- " + item.methodStm.replaceAll("\n", "\n- "), '\$${valueItl.format(item.amount)}']);
       }
       else{
-        var locationBasedList = [];
-        //adding item section headers
-        if(itemSection.type == 'Internal'){
-          data.add(['', 'Painting to Internal Surfaces', '']);
-        }
-        else if(itemSection.type == 'External'){
-          data.add(['', 'Painting to External Surfaces', '']);
-        }
-        else{
-          data.add(['', 'Painting to Furniture', '']);
-        }
-        //adding item description, mthd stm & amount
-        for(int j=0; j<itemSection.itemList.length; j++){
-          var item = itemSection.itemList[j];
-          if(item.methodStm != null && item.methodStm != '') {
-            data.add([
-              itemCounter,
-              item.description + "\n- " +
-                  item.methodStm.replaceAll("\n", "\n- "),
-              '\$${valueItl.format(item.amount)}'
-            ]);
-          }
-          else{
-            data.add([itemCounter, item.description, '\$${valueItl.format(item.amount)}']);
-          }
-          locationBasedList.add(item.amount);
-          calculationList.add(item.amount);
-          itemCounter++;
-        }
-        //add lumpsum price
-        data.add(['', 'Total Lump Sum Price', '\$${valueItl.format(calculateContractPrice(locationBasedList))}']);
+        data.add([itemCounter, item.description, '\$${valueItl.format(item.amount)}']);
       }
-    };
+      calculationList.add(item.amount);
+      itemCounter++;
+    }
 
     //add transport cost
     if(document.transport.type != 'None'){
@@ -404,8 +366,6 @@ class PDFTemplate{
       itemCounter++;
       calculationList.add(document.transport.amount);
     }
-
-
 
     //calculate item cost
     var totalContractPrice = calculateContractPrice(calculationList);
@@ -588,8 +548,7 @@ class PDFTemplate{
       'Balance Payment: ${document.tnC.balancePmt} every ${document.tnC.progressPmt.toString().toLowerCase()}.'
           : 'Balance payment upon completion of work done.'}', style: TextStyle(fontSize: fontSize)),
       pw.Text('c)   Validity Period of this quotation is ${document.tnC.validityPrd}.', style: TextStyle(fontSize: fontSize)),
-      if((document.itemSections.map((e) => e.type)).contains("Default"))
-        pw.Text('d)   Holding cost of \$100/mth will be charged after completion of work done.', style: TextStyle(fontStyle: FontStyle.italic, fontSize: fontSize)),
+      pw.Text('d)   Holding cost of \$100/mth will be charged after completion of work done.', style: TextStyle(fontStyle: FontStyle.italic, fontSize: fontSize)),
       pw.SizedBox(height: 10),
     ],
   );

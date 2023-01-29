@@ -1,7 +1,7 @@
 import 'package:invoice_generator/model/transport.dart';
 import 'package:invoice_generator/model/user.dart';
+import 'item.dart';
 import 'tnC.dart';
-import 'itemSection.dart';
 import 'package:hive/hive.dart';
 
 part 'quotation.g.dart';
@@ -16,7 +16,7 @@ class Quotation extends HiveObject{
     required this.itemSupply,
     required this.date,
     required this.user,
-    required this.itemSections,
+    required this.itemList,
     required this.transport,
     required this.tnC
   });
@@ -43,7 +43,7 @@ class Quotation extends HiveObject{
   User user;
 
   @HiveField(7)
-  List<ItemSection> itemSections;
+  List<Item> itemList;
 
   @HiveField(8)
   Transport transport;
@@ -55,7 +55,7 @@ class Quotation extends HiveObject{
     return {
       "fileName": fileName,
       "documentID": documentID, "term": term, "subjectTitle": subjectTitle,
-      "itemSupply": itemSupply, "date": date, "user": user, "itemSections": itemSections,
+      "itemSupply": itemSupply, "date": date, "user": user, "itemList": itemList.map((e)=> e.toJSON()),
       "transport": transport, "tnC": tnC
     };
   }

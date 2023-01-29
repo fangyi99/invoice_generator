@@ -56,6 +56,14 @@ class DeductionSFState extends State<DeductionSF> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+                "Discounts / Item Omissions",
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18.0, color: Colors.lightBlue, decoration: TextDecoration.underline))
+        ),
+        SizedBox(height: 15),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

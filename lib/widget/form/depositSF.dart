@@ -60,6 +60,13 @@ class _DepositFormState extends State<DepositSF> {
 
     return Column(
       children: [
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+                "Deposit",
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18.0, color: Colors.lightBlue, decoration: TextDecoration.underline))
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

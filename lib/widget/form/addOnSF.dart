@@ -26,7 +26,13 @@ class AddOnSFState extends State<AddOnSF> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 4),
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+                "Add-Ons",
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18.0, color: Colors.lightBlue, decoration: TextDecoration.underline))
+        ),
         ListView.builder(
             itemCount: invoice.addOns.length,
             shrinkWrap: true,

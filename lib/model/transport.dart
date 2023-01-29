@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 part 'transport.g.dart';
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 3)
 class Transport extends HiveObject{
 
   Transport({this.type = "Two Way", this.amount = 0, this.otherType = ""});

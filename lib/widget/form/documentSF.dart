@@ -67,6 +67,14 @@ class _DocumentSFState extends State<DocumentSF> {
 
     return Column(
       children: [
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+                "Basic Information",
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18.0, color: Colors.lightBlue, decoration: TextDecoration.underline))
+        ),
+        SizedBox(height: 20),
         Visibility(
           visible: !isQuotation,
           child: SizedBox(
@@ -257,7 +265,7 @@ class _DocumentSFState extends State<DocumentSF> {
 
         //update item list
         quotation!.itemSupply = importedQuotation.itemSupply;
-        quotation!.itemSections = importedQuotation.itemSections;
+        quotation!.itemList = importedQuotation.itemList;
 
         //update transport
         quotation!.transport = importedQuotation.transport;
@@ -285,7 +293,7 @@ class _DocumentSFState extends State<DocumentSF> {
 
         //update item list
         invoice!.itemSupply = importedQuotation.itemSupply;
-        invoice!.itemSections = importedQuotation.itemSections;
+        invoice!.itemList = importedQuotation.itemList;
 
         //update transport
         invoice!.transport = importedQuotation.transport;

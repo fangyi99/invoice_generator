@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 part 'item.g.dart';
 
-@HiveType(typeId: 3)
+@HiveType(typeId: 2)
 class Item extends HiveObject{
 
   Item({this.description = '', this.amount = 0, this.methodStm = ''});
@@ -13,7 +13,7 @@ class Item extends HiveObject{
   late String methodStm;
 
   @HiveField(2)
-  late double? amount;
+  late double amount;
 
   Map<String, dynamic> toJSON() {
     return {

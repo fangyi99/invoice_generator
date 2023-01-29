@@ -8,7 +8,7 @@ part of 'transport.dart';
 
 class TransportAdapter extends TypeAdapter<Transport> {
   @override
-  final int typeId = 4;
+  final int typeId = 3;
 
   @override
   Transport read(BinaryReader reader) {

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:invoice_generator/model/item.dart';
-import 'package:invoice_generator/model/itemSection.dart';
 import '../../model/invoice.dart';
 import '../../model/quotation.dart';
 import '../radioGroup.dart';
@@ -41,7 +40,14 @@ class _ItemSFState extends State<ItemSF> {
 
     return Column(
       children: [
-        const SizedBox(height: 4),
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+                "Item List",
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18.0, color: Colors.lightBlue, decoration: TextDecoration.underline))
+        ),
+        SizedBox(height: 15),
         Row(
           children: <Widget>[
             //radio btns
@@ -71,108 +77,31 @@ class _ItemSFState extends State<ItemSF> {
         const SizedBox(height: 15),
         ListView.builder(
           key: UniqueKey(),
-          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: isQuotation ? quotation!.itemSections.length : invoice!.itemSections.length,
-          itemBuilder: (_, i) => ItemSectionDF(i),
+          itemCount: isQuotation ? quotation!.itemList.length : invoice!.itemList.length,
+          itemBuilder: (_, j) => ItemDF(j),
         ),
         const SizedBox(height: 10),
         Align(
             alignment: Alignment.centerLeft,
             child: Container(
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 15.0),
-                  child: ElevatedButton(
-                    onPressed: (){
-                      setState((){
-                          isQuotation ? quotation!.itemSections.add(ItemSection(type: "Default", itemList: [Item()])) : invoice!.itemSections.add(ItemSection(type: "Default", itemList: [Item()]));
-                        });
-                    },
-                    child: const Text('+ Add Option'),
-                  ),
-                ),
+              child: ElevatedButton(
+                  onPressed: (){
+                    setState(() {
+                      isQuotation ? quotation!.itemList.add(Item()) : invoice!.itemList.add(Item());
+                    });
+                  },
+                  child: const Text('+ Add Item')
               ),
             )
         ),
+        const SizedBox(height: 10),
       ],
     );
   }
 
-  Widget ItemSectionDF(int sectionIndex){
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Option Item #${sectionIndex+1}', style: const TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-            IconButton(
-                onPressed: (){
-                  setState(() {
-                    isQuotation ? quotation!.itemSections.removeAt(sectionIndex) : invoice!.itemSections.removeAt(sectionIndex);
-                  });
-                },
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.red[300],
-                )
-            ),
-          ],
-        ),
-        DropdownButton(
-          items: const [
-            DropdownMenuItem(value: "Default", child: Text("Default"), enabled: true),
-            DropdownMenuItem(value: "Internal", child: Text("Internal"), enabled: true),
-            DropdownMenuItem(value: "External", child: Text("External"), enabled: true),
-          ],
-          value: isQuotation ? quotation!.itemSections[sectionIndex].type : invoice!.itemSections[sectionIndex].type,
-          onChanged: (value){
-            setState(() {
-              isQuotation ? (quotation!.itemSections[sectionIndex].type = value!) : (invoice!.itemSections[sectionIndex].type = value!);
-            });
-          },
-          isExpanded: true,
-        ),
-        const SizedBox(height: 15.0),
-        Column(
-          children: [
-            ListView.builder(
-              key: UniqueKey(),
-              shrinkWrap: true,
-              itemCount: isQuotation ? quotation!.itemSections[sectionIndex].itemList.length : invoice!.itemSections[sectionIndex].itemList.length,
-              itemBuilder: (_, j) => ItemDF(sectionIndex, j),
-            ),
-            const SizedBox(height: 10),
-            Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  child: ElevatedButton(
-                      onPressed: (){
-                        setState(() {
-                          isQuotation ? quotation!.itemSections[sectionIndex].itemList.add(Item()) : invoice!.itemSections[sectionIndex].itemList.add(Item());
-                        });
-                      },
-                      child: const Text('+ Add Item')
-                  ),
-                )
-            ),
-          ],
-        ),
-        const SizedBox(height: 5),
-        const Divider(
-          color: Colors.grey,
-        ),
-        const SizedBox(height: 5),
-      ],
-    );
-  }
-
-  Widget ItemDF(int sectionIndex, int itemIndex){
-    ItemSection itemSection = quotation?.itemSections[sectionIndex] ?? invoice!.itemSections[sectionIndex];
-    Item item = itemSection.itemList[itemIndex];
+  Widget ItemDF(int itemIndex){
+    Item item = isQuotation ? quotation!.itemList[itemIndex] : invoice!.itemList[itemIndex];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +113,7 @@ class _ItemSFState extends State<ItemSF> {
             IconButton(
                 onPressed: () {
                   setState((){
-                    isQuotation ? quotation!.itemSections[sectionIndex].itemList.removeAt(itemIndex) : invoice!.itemSections[sectionIndex].itemList.removeAt(itemIndex);
+                    isQuotation ? quotation!.itemList.removeAt(itemIndex) : invoice!.itemList.removeAt(itemIndex);
                   });
                 },
                 icon: Icon(

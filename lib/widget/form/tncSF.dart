@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import '../../model/quotation.dart';
 import '../radioGroup.dart';
 
@@ -25,6 +26,14 @@ class _TnCSFState extends State<TnCSF> {
 
     return Column(
       children: [
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+                "Terms & Conditions",
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18.0, color: Colors.lightBlue, decoration: TextDecoration.underline))
+        ),
+        SizedBox(height: 15),
         Align(alignment: Alignment.centerLeft, child: Text('Balance Payment', style: TextStyle(decoration: TextDecoration.underline))),
         SizedBox(height: 10),
         Row(

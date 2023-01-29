@@ -8,7 +8,7 @@ part of 'tnC.dart';
 
 class TnCAdapter extends TypeAdapter<TnC> {
   @override
-  final int typeId = 5;
+  final int typeId = 4;
 
   @override
   TnC read(BinaryReader reader) {

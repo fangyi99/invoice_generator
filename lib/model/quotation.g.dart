@@ -24,7 +24,7 @@ class QuotationAdapter extends TypeAdapter<Quotation> {
       itemSupply: fields[4] as String,
       date: fields[5] as DateTime,
       user: fields[6] as User,
-      itemSections: (fields[7] as List).cast<ItemSection>(),
+      itemList: (fields[7] as List).cast<Item>(),
       transport: fields[8] as Transport,
       tnC: fields[9] as TnC,
     );
@@ -49,7 +49,7 @@ class QuotationAdapter extends TypeAdapter<Quotation> {
       ..writeByte(6)
       ..write(obj.user)
       ..writeByte(7)
-      ..write(obj.itemSections)
+      ..write(obj.itemList)
       ..writeByte(8)
       ..write(obj.transport)
       ..writeByte(9)

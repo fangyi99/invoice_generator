@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:invoice_generator/model/tnC.dart';
 import 'package:invoice_generator/model/item.dart';
-import 'package:invoice_generator/model/itemSection.dart';
 import 'package:invoice_generator/model/transport.dart';
 import 'package:invoice_generator/model/user.dart';
 import 'package:invoice_generator/page/database.dart';
@@ -30,14 +29,12 @@ void main() async{
 
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(ItemAdapter());
-  Hive.registerAdapter(ItemSectionAdapter());
   Hive.registerAdapter(TransportAdapter());
   Hive.registerAdapter(TnCAdapter());
   Hive.registerAdapter(QuotationAdapter());
 
   await Hive.openBox<User>('users');
   await Hive.openBox<Quotation>('items');
-  await Hive.openBox<Quotation>('itemSections');
   await Hive.openBox<Quotation>('transports');
   await Hive.openBox<Quotation>('tnCs');
   await Hive.openBox<Quotation>('quotations');
@@ -82,7 +79,7 @@ class Index extends StatelessWidget{
                             onPressed: () async {
 
                               var quotation = Quotation(fileName: "", documentID: "", term: "C.O.D", subjectTitle: "", itemSupply: "Labour & Materials",
-                                  date: DateTime.now(), user: User(), itemSections: [ItemSection(type:"Default", itemList: [Item()])], transport: Transport(type: "Two Way"), tnC: TnC());
+                                  date: DateTime.now(), user: User(), itemList: [Item()], transport: Transport(type: "Two Way", amount: 0), tnC: TnC());
 
                               QuotationDB.createQuotation(quotation).then((value) => {
                                 Navigator.push(
@@ -116,7 +113,7 @@ class Index extends StatelessWidget{
                                 context,
                                 MaterialPageRoute(builder: (context) => InvoiceForm(
                                     formMode: "create",
-                                    invoice: Invoice("", "", "C.O.D", "", "Labour & Materials", DateTime.now(),User(),[ItemSection(type:"Default", itemList: [Item()])], Transport(), [AddOn()], [Deduction(omissions: [Omission()])], [Deposit()])
+                                    invoice: Invoice("", "", "C.O.D", "", "Labour & Materials", DateTime.now(),User(), [Item()], Transport(), [AddOn()], [Deduction(omissions: [Omission()])], [Deposit()])
                                 ))
                               )
                             }

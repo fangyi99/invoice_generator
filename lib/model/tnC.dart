@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 part 'tnC.g.dart';
 
-@HiveType(typeId: 5)
+@HiveType(typeId: 4)
 class TnC extends HiveObject{
 
   TnC({this.balancePmt = "Upon Completion", this.progressPmt = "Weekly", this.validityPrd = "2 weeks"});

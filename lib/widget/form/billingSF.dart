@@ -67,6 +67,14 @@ class _BillingSFState extends State<BillingSF> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+                "Addressee Details",
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18.0, color: Colors.lightBlue, decoration: TextDecoration.underline))
+        ),
+        SizedBox(height: 15),
         SizedBox(
           width: double.infinity,
           height: 50,
