@@ -28,6 +28,24 @@ class InvoiceFormState extends State<InvoiceForm> {
   int currentStep = 0;
 
   @override
+  initState(){
+      //clear inputs
+      BillingSF.companyController.clear();
+      BillingSF.nameController.clear();
+      BillingSF.addressL1Controller.clear();
+      BillingSF.addressL2Controller.clear();
+      BillingSF.addressL3Controller.clear();
+      BillingSF.postalCodeController.clear();
+      BillingSF.hdphCCController.text = "65";
+      BillingSF.hdphController.clear();
+      BillingSF.officeCCController.clear();
+      BillingSF.officeController.clear();
+      BillingSF.emailController.clear();
+      TransportSF.amountController.clear();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     return WillPopScope(

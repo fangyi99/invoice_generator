@@ -36,16 +36,13 @@ class DeductionSFState extends State<DeductionSF> {
         const SizedBox(height: 10),
         Align(
             alignment: Alignment.centerLeft,
-            child: Container(
-              height: 43,
-              child: ElevatedButton(
-                  onPressed: (){
-                    setState(() {
-                      invoice.deductions.add(Deduction());
-                    });
-                  },
-                  child: const Text('+ Deduct item')
-              ),
+            child: ElevatedButton(
+                onPressed: (){
+                  setState(() {
+                    invoice.deductions.add(Deduction());
+                  });
+                },
+                child: const Text('+ Deduct item')
             )
         ),
       ],

@@ -37,11 +37,12 @@ class QuotationFormState extends State<QuotationForm> {
       BillingSF.addressL2Controller.clear();
       BillingSF.addressL3Controller.clear();
       BillingSF.postalCodeController.clear();
-      BillingSF.hdphCCController.clear();
+      BillingSF.hdphCCController.text = "65";
       BillingSF.hdphController.clear();
       BillingSF.officeCCController.clear();
       BillingSF.officeController.clear();
       BillingSF.emailController.clear();
+      TransportSF.amountController.clear();
       QuotationForm.saved = false;
     }else{
       QuotationForm.saved = true;
