@@ -59,7 +59,7 @@ class _TransportSFState extends State<TransportSF> {
                     selectedIndex: selectedIndex,
                     onChange: (){
                       setState((){
-                        isQuotation ? quotation!.transport.type = transportList[0] : invoice!.transport.type = transportList[0];
+                        isQuotation ? quotation!.transport.type = "Transportation (one-way)" : invoice!.transport.type = "Transportation (one-way)";
                       });
                     }
                 )
@@ -71,7 +71,7 @@ class _TransportSFState extends State<TransportSF> {
                     selectedIndex: selectedIndex,
                     onChange: (){
                       setState((){
-                        isQuotation ? quotation!.transport.type = transportList[1] : invoice!.transport.type = transportList[1];
+                        isQuotation ? quotation!.transport.type = "Transportation (to n fro)" : invoice!.transport.type = "Transportation (to n fro)";
                       });
                     }
                 )
@@ -174,9 +174,9 @@ class _TransportSFState extends State<TransportSF> {
 
   getSelectedIndex(){
     switch(isQuotation ? widget.quotation!.transport.type : widget.invoice!.transport.type){
-      case "One Way":
+      case "Transportation (one-way)":
         return 0;
-      case "Two Way":
+      case "Transportation (to n fro)":
         return 1;
       case "Self Collection":
         return 2;

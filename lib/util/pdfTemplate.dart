@@ -56,8 +56,6 @@ class PDFTemplate{
         footer: (context) => buildFooter(isQuotation, primaryFontSize)
     ));
 
-    // List<int> bytes = await pdf.save();
-    // return PdfCreation.saveDocument(bytes);
     return PdfCreation.saveDocument(name: document.fileName, pdf: pdf);
   }
 
@@ -73,8 +71,10 @@ class PDFTemplate{
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             pw.Text(document.user.name, style: pw.TextStyle(fontSize: fontSize)),
-            pw.Text(document.user.address1, style: pw.TextStyle(fontSize: fontSize)),
-            pw.Text(document.user.address2, style: pw.TextStyle(fontSize: fontSize)),
+            if(document.user.address1 != '')
+              pw.Text(document.user.address1, style: pw.TextStyle(fontSize: fontSize)),
+            if(document.user.address2 != '')
+              pw.Text(document.user.address2, style: pw.TextStyle(fontSize: fontSize)),
             if(document.user.address3 != '')
               pw.Text(document.user.address1, style: pw.TextStyle(fontSize: fontSize)),
             pw.Text('Singapore ' + document.user.postalCode, style: pw.TextStyle(fontSize: fontSize)),
@@ -362,7 +362,11 @@ class PDFTemplate{
 
     //add transport cost
     if(document.transport.type != 'None'){
-      data.add([itemCounter, document.transport.type, '\$${valueItl.format(document.transport.amount)}']);
+      if(document.transport.type == "Others"){
+      data.add([itemCounter, document.transport.otherType, '\$${valueItl.format(document.transport.amount)}']);
+    }else{
+        data.add([itemCounter, document.transport.type, '\$${valueItl.format(document.transport.amount)}']);
+      }
       itemCounter++;
       calculationList.add(document.transport.amount);
     }
@@ -548,7 +552,7 @@ class PDFTemplate{
       'Balance Payment: ${document.tnC.balancePmt} every ${document.tnC.progressPmt.toString().toLowerCase()}.'
           : 'Balance payment upon completion of work done.'}', style: TextStyle(fontSize: fontSize)),
       pw.Text('c)   Validity Period of this quotation is ${document.tnC.validityPrd}.', style: TextStyle(fontSize: fontSize)),
-      pw.Text('d)   Holding cost of \$100/mth will be charged after completion of work done.', style: TextStyle(fontStyle: FontStyle.italic, fontSize: fontSize)),
+      pw.Text('d)   Holding costs (for 2 or less furnitures storing after completion for more than 3 weeks), \$100 per month', style: TextStyle(fontStyle: FontStyle.italic, fontSize: fontSize)),
       pw.SizedBox(height: 10),
     ],
   );

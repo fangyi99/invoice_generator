@@ -57,9 +57,11 @@ class _BillingSFState extends State<BillingSF> {
 
     if(widget.quotation != null){
       isQuotation = true;
+      quotation!.user.hdphCC = "65";
     }
     else{
       isQuotation = false;
+      invoice!.user.hdphCC = "65";
     }
   }
 
@@ -132,7 +134,7 @@ class _BillingSFState extends State<BillingSF> {
         TextFormField(
           controller: BillingSF.addressL1Controller,
           decoration: InputDecoration(
-            labelText: 'Address Line 1 *',
+            labelText: 'Address Line 1',
             hintText: '39 Scotts Road',
             border: OutlineInputBorder(),
           ),
@@ -143,17 +145,12 @@ class _BillingSFState extends State<BillingSF> {
               isQuotation ? (quotation!.user.address1 = value) : (invoice!.user.address1 = value);
             });
           },
-          validator: (value) {
-            if(value == null || value.isEmpty)
-              return 'This field is required.';
-            return null;
-          },
         ),
         SizedBox(height: 15),
         TextFormField(
           controller: BillingSF.addressL2Controller,
           decoration: InputDecoration(
-            labelText: 'Address Line 2 *',
+            labelText: 'Address Line 2',
             hintText: '#12-9181',
             border: OutlineInputBorder(),
           ),
@@ -162,11 +159,6 @@ class _BillingSFState extends State<BillingSF> {
             setState(() {
               isQuotation ? (quotation!.user.address2 = value) : (invoice!.user.address2 = value);
             });
-          },
-          validator: (value) {
-            if(value == null || value.isEmpty)
-              return 'This field is required.';
-            return null;
           },
         ),
         SizedBox(height: 15),
